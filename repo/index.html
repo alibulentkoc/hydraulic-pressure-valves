@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inside Pressure Control Valves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e8ecf0; --panel:#f8fafb; --ink:#13202c; --muted:#56636f; --rule:#cbd3db; --grid:rgba(30,80,130,.075);
+  --accent:#16344f; --accent-ink:#ffffff; --marker:#f2c230;
+  --steel:#bcc4cc; --hatch:#8c96a0; --edge:#36414c; --pipe:#a9b3bc;
+  --spring-back:#23476b; --spring-front:#5a98d4;
+  --font:"Archivo","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f151b; --panel:#161f28; --ink:#e5ecf2; --muted:#93a1ae; --rule:#2a3642; --grid:rgba(140,190,240,.06);
+    --accent:#a9cdf0; --accent-ink:#0f151b; --marker:#f2c230;
+    --steel:#5e6974; --hatch:#47515b; --edge:#0a0e12; --pipe:#55606a;
+    --spring-back:#1b3a58; --spring-front:#6aa7e2; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --panel:#161f28; --ink:#e5ecf2; --muted:#93a1ae; --rule:#2a3642; --grid:rgba(140,190,240,.06);
+  --accent:#a9cdf0; --accent-ink:#0f151b; --marker:#f2c230;
+  --steel:#5e6974; --hatch:#47515b; --edge:#0a0e12; --pipe:#55606a;
+  --spring-back:#1b3a58; --spring-front:#6aa7e2; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5}
+.wrap{max-width:1320px;margin:0 auto;padding:28px 20px 56px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 32px;margin-bottom:22px}
+header.top h1{margin:0;font-weight:800;font-stretch:118%;font-size:clamp(28px,4vw,44px);line-height:1.02;letter-spacing:-.01em;max-width:16ch}
+header.top p{margin:8px 0 0;color:var(--muted);max-width:56ch}
+.key{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13.5px;font-stretch:90%;color:var(--muted)}
+.key span{display:inline-flex;align-items:center;gap:7px}
+.key i{width:26px;height:10px;border-radius:5px;display:inline-block}
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);gap:26px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:4px;position:sticky;top:16px}
+.rail button{all:unset;cursor:pointer;display:block;padding:10px 12px 10px 16px;border-radius:10px;position:relative}
+.rail button b{display:block;font-weight:700;font-stretch:95%;font-size:15.5px;line-height:1.2}
+.rail button span{display:block;font-size:13px;color:var(--muted);font-stretch:92%;line-height:1.3;margin-top:2px}
+.rail button:hover{background:var(--panel)}
+.rail button[aria-selected="true"]{background:var(--panel);box-shadow:0 0 0 1px var(--rule)}
+.rail button[aria-selected="true"]::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:5px;border-radius:3px;background:var(--marker)}
+.rail button:focus-visible,.btn:focus-visible,.seg button:focus-visible,input[type=range]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:1080px){
+  .app{grid-template-columns:1fr}
+  .rail{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px}
+  .rail button{flex:0 0 auto;padding:8px 14px}
+  .rail button span{display:none}
+  .rail button[aria-selected="true"]::before{left:12px;right:12px;top:auto;bottom:2px;width:auto;height:4px}
+}
+.main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px}
+.stagecard{position:relative;overflow:hidden}
+.stage{background-color:var(--panel);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px;padding:12px 10px 8px;overflow-x:auto}
+.stage svg{display:block;width:100%;height:auto;min-width:440px}
+.vtitle{padding:14px 18px 10px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.vtitle h2{margin:0;font-weight:800;font-stretch:110%;font-size:clamp(20px,2.4vw,26px);line-height:1.1}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--rule);font-weight:700;font-stretch:92%;font-size:14px}
+.pill i{width:10px;height:10px;border-radius:50%;background:#8b96a1;transition:background .25s}
+.pill[data-k="open"] i{background:#1f9a5a;box-shadow:0 0 0 4px rgba(31,154,90,.2)}
+.pill[data-k="partial"] i{background:#e8a41a;box-shadow:0 0 0 4px rgba(232,164,26,.22)}
+.pill[data-k="reverse"] i{background:#1f6fd1;box-shadow:0 0 0 4px rgba(31,111,209,.2)}
+.trace{padding:10px 14px 12px;border-top:1px solid var(--rule)}
+.trace .th{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;color:var(--muted);font-stretch:92%;flex-wrap:wrap}
+.trace .th span{display:inline-flex;align-items:center;gap:6px;margin-left:12px}
+.trace .th i{width:16px;height:3px;border-radius:2px;display:inline-block}
+.trace svg{display:block;width:100%;height:auto;margin-top:4px}
+.tgrid{stroke:var(--rule);stroke-width:1}
+.tset{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 4}
+.tline{fill:none;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+.tlab{font-size:11px;fill:var(--muted);font-family:var(--font)}
+.side{display:flex;flex-direction:column;gap:14px}
+.ctrl{padding:16px}
+.seg{display:flex;background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:3px;gap:3px;margin-bottom:14px}
+.seg button{all:unset;cursor:pointer;flex:1;text-align:center;padding:7px 10px;border-radius:7px;font-weight:600;font-stretch:92%;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.sl{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline}
+.sl label{font-size:14px;font-stretch:94%;color:var(--muted)}
+.sl output{font-weight:800;font-size:22px;font-stretch:105%;font-variant-numeric:tabular-nums}
+.sl output small{font-size:13px;font-weight:600;color:var(--muted)}
+.track{grid-column:1/-1;position:relative;padding-top:6px}
+.track input{width:100%;accent-color:var(--accent);margin:0}
+.track .mk{position:absolute;top:-2px;width:2px;height:12px;background:#c8102e;transform:translateX(-1px)}
+.track .mk::after{content:attr(data-l);position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:11px;color:#c8102e;white-space:nowrap;font-weight:600}
+.sl.off{opacity:.4}
+.btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btn{all:unset;cursor:pointer;padding:7px 14px;border-radius:8px;border:1px solid var(--rule);font-weight:600;font-stretch:92%;font-size:14px;background:var(--bg)}
+.btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0;font-stretch:94%}
+.gauges{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;padding:14px 16px}
+.gauge{text-align:center}
+.gauge svg{width:100%;max-width:160px;display:block;margin:0 auto}
+.gtrack{fill:none;stroke:var(--rule);stroke-width:9;stroke-linecap:round}
+.gfill{fill:none;stroke-width:9;stroke-linecap:round}
+.gneedle{stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.ghub{fill:var(--ink)}
+.gset{stroke:var(--ink);stroke-width:2}
+.gval{font-weight:800;font-size:24px;font-stretch:105%;font-variant-numeric:tabular-nums;line-height:1;margin-top:-4px}
+.gval small{font-size:12px;font-weight:600;color:var(--muted)}
+.glab{font-size:13px;color:var(--muted);font-stretch:92%;line-height:1.25;margin-top:3px}
+.explain{padding:16px}
+.explain h3,.symcard h3{margin:0 0 6px;font-size:13px;font-weight:700;color:var(--muted);font-stretch:95%}
+.explain p{margin:0;font-size:15.5px;line-height:1.55;min-height:6.2em}
+.steps{list-style:none;margin:12px 0 0;padding:12px 0 0;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:7px;font-size:14px;line-height:1.35}
+.steps li{display:flex;gap:10px;color:var(--muted);transition:color .3s}
+.steps li b{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-size:12px;transition:all .3s}
+.steps li.on{color:var(--ink)}
+.steps li.on b{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.symcard{padding:14px 16px}
+.sym{color:var(--ink);display:flex;justify-content:center}
+.sym svg{width:100%;max-width:280px;height:auto}
+.sym .dsh{stroke-dasharray:5 4}
+/* drawing */
+.bd{fill:url(#hatch);stroke:var(--edge);stroke-width:2}
+.h-bg{fill:var(--steel)} .h-ln{stroke:var(--hatch);stroke-width:1.1}
+.stl{stroke:var(--edge);stroke-width:1.2}
+.spB{fill:none;stroke:var(--spring-back);stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round}
+.spF{fill:none;stroke:var(--spring-front);stroke-width:4.6;stroke-linecap:round;stroke-linejoin:round}
+.spH{fill:none;stroke:rgba(255,255,255,.6);stroke-width:1.2;stroke-linecap:round}
+.fp{fill:none;stroke:none}
+.stream{fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.pt0{stroke:rgba(10,20,30,.38);stroke-width:4.6;stroke-linecap:round}
+.pt1{stroke:#fff;stroke-width:2.4;stroke-linecap:round}
+.lbl text{font-family:var(--font);font-size:12.5px;font-weight:600;font-stretch:88%;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:3.5px;stroke-linejoin:round}
+.lbl path{fill:none;stroke:var(--ink);stroke-width:1}
+.lbl circle{fill:var(--ink)}
+.ltxt{font-family:var(--font);font-size:12px;font-weight:700;fill:#fff;text-anchor:middle}
+@media (prefers-reduced-motion: reduce){.steps li,.steps li b,.pill i{transition:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <pattern id="hatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)"><rect class="h-bg" width="7" height="7"/><line class="h-ln" x1="0" y1="0" x2="0" y2="7"/></pattern>
+  <linearGradient id="steelV" x1="0" x2="1"><stop offset="0" stop-color="#4c5560"/><stop offset=".28" stop-color="#b9c2cb"/><stop offset=".45" stop-color="#f3f6f9"/><stop offset=".7" stop-color="#9aa4ae"/><stop offset="1" stop-color="#46505a"/></linearGradient>
+  <linearGradient id="steelH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4c5560"/><stop offset=".28" stop-color="#b9c2cb"/><stop offset=".45" stop-color="#f3f6f9"/><stop offset=".7" stop-color="#9aa4ae"/><stop offset="1" stop-color="#46505a"/></linearGradient>
+  <linearGradient id="bronzeV" x1="0" x2="1"><stop offset="0" stop-color="#6b4512"/><stop offset=".3" stop-color="#c88f3a"/><stop offset=".48" stop-color="#f1cf8e"/><stop offset=".72" stop-color="#b07a2a"/><stop offset="1" stop-color="#5e3c0f"/></linearGradient>
+  <linearGradient id="bronzeH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b4512"/><stop offset=".3" stop-color="#c88f3a"/><stop offset=".48" stop-color="#f1cf8e"/><stop offset=".72" stop-color="#b07a2a"/><stop offset="1" stop-color="#5e3c0f"/></linearGradient>
+  <radialGradient id="ballG" cx=".35" cy=".32" r=".75"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#c9d0d7"/><stop offset="1" stop-color="#4a535d"/></radialGradient>
+  <linearGradient id="knobG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3f45"/><stop offset=".4" stop-color="#1c1f22"/><stop offset="1" stop-color="#08090a"/></linearGradient>
+</defs></svg>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Inside pressure control valves</h1>
+      <p>Live cutaways of seven valves. Move the pressure, and the springs, spools and fluid respond the way they do in a real circuit.</p>
+    </div>
+    <div class="key" aria-label="Fluid color code">
+      <span><i style="background:#c8102e"></i>Pump / system pressure</span>
+      <span><i style="background:#e8711a"></i>Pilot pressure</span>
+      <span><i style="background:#d4a017"></i>Reduced or metered</span>
+      <span><i style="background:#1f6fd1"></i>Return to tank</span>
+      <span><i style="background:#1f9a5a"></i>Drain</span>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="rail" role="tablist" aria-label="Valves"></nav>
+    <div id="view"></div>
+  </div>
+</div>
+<script>
+(function(){
+"use strict";
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const ramp=(v,a,b)=>clamp((v-a)/(b-a));
+const ease=(c,t,dt,k=7)=>c+(t-c)*Math.min(1,dt*k);
+/* damped spring: underdamped for a slight, realistic overshoot */
+function phys(o,key,target,dt,k=150,c=17,lo=0,hi=1){const x=o[key]||0,v=o[key+'_v']||0;let a=k*(target-x)-c*v;let nv=v+a*dt,nx=x+nv*dt;if(nx<lo){nx=lo;nv=0;}if(nx>hi){nx=hi;nv=0;}o[key]=nx;o[key+'_v']=nv;return nx;}
+
+/* hydraulic color code */
+const ROLE={P:[200,16,46],pilot:[232,113,26],met:[212,160,23],T:[31,111,209],D:[31,154,90]};
+const PALE=[236,239,243];
+function roleColor(role,q){const d=ROLE[role]||ROLE.P;const t=0.16+0.84*Math.pow(clamp(q),0.7);return d.map((c,i)=>PALE[i]+(c-PALE[i])*t);}
+
+/* ---------- drawing helpers ---------- */
+function helix(cx,a1,a2,r,n,horiz){const steps=Math.max(8,Math.round(n*20));let back='',front='',pf=false,px=0,py=0;
+  for(let i=0;i<=steps;i++){const t=i/steps,th=2*Math.PI*n*t;const along=a1+(a2-a1)*t,across=r*Math.sin(th),depth=Math.cos(th),pz=r*0.24*depth;
+    const X=horiz?along+pz:cx+across,Y=horiz?cx+across:along+pz;const s=X.toFixed(1)+' '+Y.toFixed(1);
+    back+=(i?'L':'M')+s;const f=depth>0;if(f)front+=(pf?'L':'M'+(i?px.toFixed(1)+' '+py.toFixed(1)+'L':''))+s;pf=f;px=X;py=Y;}
+  return [back,front];}
+function spr(n,args){const [b,f]=helix(...args);return `<path data-s="${n}" data-w="b" class="spB" d="${b}"/><path data-s="${n}" data-w="f" class="spF" d="${f}"/><path data-s="${n}" data-w="f" class="spH" d="${f}"/>`;}
+const bd=(x,y,w,h,rx=0)=>`<rect class="bd" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const Z=(p,z,x,y,w,h)=>`<rect ${p?`data-p="${p}" `:''}data-z="${z}" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+const F=(n,d,w)=>`<path data-f="${n}" class="fp" d="${d}"${w?` data-sw="${w}"`:''}/>`;
+function zpipe(z,d,w){return `<path d="${d}" fill="none" stroke="var(--edge)" stroke-width="${w+9}" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="var(--pipe)" stroke-width="${w+5}" stroke-linejoin="round"/><path data-z="${z}" data-zs="1" d="${d}" fill="none" stroke-width="${w}" stroke-linejoin="round"/>`;}
+function knob(x,y,w,h){let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="url(#knobG)" stroke="#000"/>`;for(let i=x+5;i<x+w-3;i+=5)s+=`<line x1="${i}" y1="${y+3}" x2="${i}" y2="${y+h-3}" stroke="#4a4f55" stroke-width="1.2"/>`;return s;}
+function knobH(x,y,w,h){let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="url(#knobG)" stroke="#000"/>`;for(let i=y+5;i<y+h-3;i+=5)s+=`<line x1="${x+3}" y1="${i}" x2="${x+w-3}" y2="${i}" stroke="#4a4f55" stroke-width="1.2"/>`;return s;}
+function screw(x,y,w,h,horiz){let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${horiz?'steelH':'steelV'})" class="stl"/>`;if(horiz){for(let i=x+3;i<x+w;i+=4)s+=`<line x1="${i}" y1="${y}" x2="${i+2}" y2="${y+h}" stroke="#5d6670" stroke-width=".9"/>`;}else{for(let i=y+3;i<y+h;i+=4)s+=`<line x1="${x}" y1="${i}" x2="${x+w}" y2="${i+2}" stroke="#5d6670" stroke-width=".9"/>`;}return s;}
+const nut=(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="url(#steelV)" class="stl"/><line x1="${x+w/3}" y1="${y}" x2="${x+w/3}" y2="${y+h}" stroke="var(--edge)"/><line x1="${x+2*w/3}" y1="${y}" x2="${x+2*w/3}" y2="${y+h}" stroke="var(--edge)"/>`;
+const plate=(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5" fill="url(#steelH)" class="stl"/>`;
+function L(text,x,y,anchor,line){const t=`<text x="${x}" y="${y}" text-anchor="${anchor||'start'}">`+text.split('\n').map((l,i)=>`<tspan x="${x}" dy="${i?14:0}">${l}</tspan>`).join('')+`</text>`;return `<g class="lbl">${line?`<path d="M${line[0]} ${line[1]} L${line[2]} ${line[3]}"/><circle cx="${line[2]}" cy="${line[3]}" r="2.4"/>`:''}${t}</g>`;}
+/* schematic */
+const sDot=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.5" fill="currentColor" stroke="none"/>`;
+const sTank=(x,y)=>`<path d="M${x-11} ${y} V${y+10} H${x+11} V${y}"/>`;
+function sArrow(n,x1,x2,y,off){return `<g data-p="${n}" transform="translate(0 ${off})"><line x1="${x1}" y1="${y}" x2="${x2-6}" y2="${y}"/><path d="M${x2} ${y} l-10 -5 v10z" fill="currentColor" stroke="none"/></g>`;}
+function sSpring(x,yb,adj){let s=`<path d="M${x} ${yb} L${x-12} ${yb-4} L${x+12} ${yb-10} L${x-12} ${yb-16} L${x+12} ${yb-22} L${x-12} ${yb-28}"/>`;if(adj)s+=`<line x1="${x-18}" y1="${yb-2}" x2="${x+14}" y2="${yb-28}"/><path d="M0 0 l-9 -4.5 v9z" transform="translate(${x+16} ${yb-30}) rotate(-39)" fill="currentColor" stroke="none"/>`;return s;}
+const symWrap=(vb,inner)=>`<svg viewBox="${vb}" fill="none" stroke="currentColor" stroke-width="2" role="img" aria-label="ISO schematic symbol">${inner}</svg>`;
+const sText=(x,y,t)=>`<text x="${x}" y="${y}" fill="currentColor" stroke="none" font-size="12.5" font-weight="600" font-family="Archivo, Arial, sans-serif">${t}</text>`;
+
+/* ---------- shared spool body (sequence / counterbalance / unloading) ---------- */
+function spoolBody(o){
+  let s=bd(150,60,260,350,10);
+  s+=Z('sprch','drain',245,80,60,90)+Z('mid','in',245,222,60,78)+Z('pch','pilot',245,340,60,25);
+  s+=Z(null,'in',150,235,96,40)+Z(null,'out',304,175,106,40);
+  s+= o.drain==='ext'?Z(null,'drain',150,95,96,15):Z(null,'drain',304,95,36,15)+Z(null,'drain',326,108,14,68);
+  s+= o.pilot==='in'?Z(null,'pilot',195,274,14,92)+Z(null,'pilot',195,352,51,14):Z(null,'pilot',150,352,96,14);
+  if(o.check){s+=Z(null,'out',366,214,28,78)+Z(null,'in',366,292,28,107)+Z(null,'in',160,385,234,14)+Z(null,'in',160,274,14,125);}
+  s+=F('fwd','M152 255 H262 Q275 255 275 240 V210 Q275 195 290 195 H408');
+  if(o.check)s+=F('rev','M408 195 H372 Q380 195 380 210 V378 Q380 392 366 392 H180 Q167 392 167 378 V268 Q167 255 155 255',12);
+  if(o.check){s+=`<rect x="366" y="288" width="8" height="9" class="bd"/><rect x="386" y="288" width="8" height="9" class="bd"/>`+spr('cspring',[380,316,382,7,4,false])+`<circle data-p="ball" cx="380" cy="306" r="10" fill="url(#ballG)" stroke="var(--edge)"/>`;}
+  s+=plate(250,86,50,6)+spr('spring',[275,92,170,21,5,false]);
+  s+=screw(270,12,10,76)+nut(257,44,36,16)+knob(238,2,74,22);
+  s+=`<g data-p="spool"><rect x="246" y="170" width="58" height="52" rx="3" fill="url(#steelV)" class="stl"/><rect x="266" y="222" width="18" height="78" fill="url(#steelV)" class="stl"/><rect x="246" y="300" width="58" height="40" rx="3" fill="url(#steelV)" class="stl"/><line x1="246" y1="186" x2="304" y2="186" stroke="var(--edge)" stroke-width=".8" opacity=".6"/><line x1="246" y1="324" x2="304" y2="324" stroke="var(--edge)" stroke-width=".8" opacity=".6"/></g>`;
+  return s;
+}
+function applySpool(c,s,chk){
+  c.attr('sprch',{height:Math.max(0,90-s)});c.attr('mid',{y:222-s});c.attr('pch',{y:340-s,height:25+s});
+  c.tr('spool',0,-s);c.spring('spring',[275,92,170-s,21,5,false]);
+  if(chk!=null){const cy=306+chk*18;c.attr('ball',{cy});c.spring('cspring',[380,cy+10,382,7,4,false]);}
+}
+function seqSymbol(drain){return symWrap('0 0 280 190',`<line x1="10" y1="90" x2="110" y2="90"/><rect x="110" y="60" width="70" height="60"/><line x1="180" y1="90" x2="270" y2="90"/>`+sDot(40,90)+sDot(64,90)+sDot(232,90)+`<path class="dsh" d="M64 90 V140 H124 V120"/>`+sSpring(145,60,true)+(drain?`<path class="dsh" d="M157 34 H200 V46"/>`+sTank(200,46):'')+`<path d="M40 90 V165 H118 M232 90 V165 H152 M152 165 L132 152 M152 165 L132 178"/><g data-p="sball"><circle cx="131" cy="165" r="10"/></g>`+sArrow('sarrow',118,172,90,18));}
+
+/* ---------- valves ---------- */
+const V=[];
+V.push({key:'check',name:'Check valve',sub:'Free flow one way, blocked the other',scale:200,
+  slider:{label:'Pressure at port A',min:0,max:200,value:60,mark:105,markL:'cracks'},
+  note:'Cracking pressure is 5 psi. The circuit holds port B at 100 psi.',
+  gauges:[{label:'Port A',max:200,set:105,col:'#c8102e'},{label:'Port B',max:200,col:'#1f6fd1'}],
+  svg(){return `<svg viewBox="0 0 560 330" role="img" aria-label="Check valve cutaway">
+    ${zpipe('A','M10 210 H92',44)}${zpipe('B','M468 210 H550',44)}
+    ${bd(90,128,380,164,14)}
+    ${Z(null,'A',90,188,142,44)}${Z(null,'B',232,150,140,120)}${Z(null,'B',372,188,98,44)}
+    ${F('fwd','M14 205 H218 Q236 160 266 160 H338 Q352 160 356 177 Q362 205 380 205 H546',12)}${F('fwd','M14 215 H218 Q236 260 266 260 H338 Q352 260 356 243 Q362 215 380 215 H546',12)}
+    <rect class="bd" x="350" y="150" width="12" height="120"/>${Z(null,'B',350,168,12,18)}${Z(null,'B',350,234,12,18)}
+    <rect x="226" y="176" width="8" height="12" fill="url(#steelH)" class="stl"/><rect x="226" y="232" width="8" height="12" fill="url(#steelH)" class="stl"/>
+    ${spr('spring',[210,254,350,20,6,true])}
+    <g data-p="poppet" transform="translate(232 210)"><path d="M0 -21 L-17 0 L0 21Z" fill="url(#bronzeH)" class="stl"/><rect x="0" y="-42" width="22" height="84" rx="4" fill="url(#bronzeV)" class="stl"/><rect x="22" y="-6" width="40" height="12" fill="url(#steelH)" class="stl"/></g>
+    ${L('Inlet, port A',16,170)}${L('Outlet, port B',544,170,'end')}
+    ${L('Poppet',236,108,'middle',[236,114,243,172])}${L('Spring',300,108,'middle',[300,114,300,192])}
+    ${L('Seat',198,320,'middle',[198,308,229,240])}${L('Spring retainer',356,320,'middle',[356,308,356,268])}
+    </svg>`;},
+  symbol(){return symWrap('0 0 260 150',`<line x1="20" y1="75" x2="112" y2="75"/><path d="M112 75 L134 59 M112 75 L134 91"/><g data-p="sball"><circle cx="134" cy="75" r="12"/></g><line x1="158" y1="75" x2="240" y2="75"/>${sText(22,62,'A')}${sText(230,62,'B')}`);},
+  init(){},
+  auto(t,st){st.P=100+92*Math.sin(t*0.55);},
+  frame(c,st){
+    const A=st.P,B=100,dp=A-B,tgt=ramp(dp,5,45);
+    const lift=phys(st,'lift',tgt,c.dt);
+    const px=232+lift*44;c.tr('poppet',px,210);c.spring('spring',[210,px+22,350,20,6,true]);
+    c.z('A',A,'P');c.z('B',B,dp>0?'P':'P');c.f('fwd',lift);c.tr('sball',lift*10,0);
+    let k,title,cap;
+    if(dp<=0){k='closed';title='Closed, reverse pressure';cap=`Port B (${B} psi) is higher than port A (${Math.round(A)} psi). That back pressure plus the light spring presses the poppet into its seat, so nothing can flow from B back to A.`;}
+    else if(tgt<=0){k='closed';title='Closed';cap=`Port A is ${Math.round(dp)} psi above port B, but the poppet stays seated until the difference reaches the 5 psi cracking pressure.`;}
+    else{k=tgt>0.95?'open':'partial';title=tgt>0.95?'Open, free flow':'Cracking open';cap=`A ${Math.round(dp)} psi difference overcomes the spring. The poppet lifts off the seat and fluid streams from A to B; a larger difference opens it wider.`;}
+    return {g:[A,B],k,title,cap};}});
+
+V.push({key:'relief',name:'Direct-acting relief valve',sub:'Caps maximum system pressure',scale:1100,
+  slider:{label:'Pressure the load demands',min:0,max:1100,value:600,mark:1000,markL:'setting'},
+  note:'Cracks at 950 psi and passes full pump flow at the 1,000 psi setting.',
+  gauges:[{label:'Pump / system',max:1200,set:1000,col:'#c8102e'}],
+  svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Direct-acting relief valve cutaway">
+    ${zpipe('in','M18 398 H542',26)}${zpipe('tank','M370 232 H470',30)}
+    ${bd(250,352,60,34,3)}${bd(190,66,180,294,12)}
+    ${Z(null,'in',264,300,32,94)}${Z(null,'tank',232,110,96,190)}${Z(null,'tank',326,217,46,30)}
+    ${F('pump','M22 398 H270')}${F('sys','M290 398 H538')}${F('rel','M280 392 V318 Q280 306 300 304 Q321 302 321 286 V246 Q321 232 336 232 H466',12)}
+    ${plate(244,110,72,8)}${spr('spring',[280,118,254,24,7,false])}
+    ${screw(274,16,12,96)}${nut(261,50,38,16)}<rect x="234" y="2" width="92" height="22" rx="11" fill="#b8322a" stroke="#5d140f"/><rect x="240" y="5" width="80" height="6" rx="3" fill="#e2766c" opacity=".7"/>
+    <g data-p="poppet"><rect x="244" y="254" width="72" height="38" rx="4" fill="url(#bronzeV)" class="stl"/><path d="M248 292 H312 L280 324Z" fill="url(#bronzeV)" class="stl"/></g>
+    ${L('Adjustment knob',338,16,'start',[336,12,326,12])}${L('Spring',408,150,'start',[404,146,302,160])}
+    ${L('Poppet',160,272,'end',[164,268,244,272])}${L('Valve body',160,116,'end',[164,112,190,112])}
+    ${L('Outlet to reservoir',382,206)}${L('Inlet from pump',160,330,'end',[164,326,264,330])}
+    ${L('From pump',22,436)}${L('To system',538,436,'end')}
+    </svg>`;},
+  symbol(){return symWrap('0 0 260 170',`<line x1="10" y1="95" x2="100" y2="95"/>${sDot(55,95)}<path class="dsh" d="M55 95 V148 H112 V125"/><rect x="100" y="65" width="80" height="60"/>${sSpring(140,65,true)}<path d="M180 95 H222 V128"/>${sTank(222,128)}${sArrow('sarrow',108,172,95,18)}`);},
+  init(){},
+  auto(t,st){st.P=560+520*(0.5-0.5*Math.cos(t*0.5));},
+  frame(c,st){
+    const P=st.P,tgt=ramp(P,950,1050),lift=phys(st,'lift',tgt,c.dt);
+    const Pd=P<=950?P:950+Math.min(P-950,150)*0.45;
+    c.tr('poppet',0,-lift*32);c.spring('spring',[280,118,254-lift*32,24,7,false]);
+    c.z('in',Pd,'P');c.z('tank',12+260*lift,'T');
+    c.f('pump',P>0?1:0);c.f('sys',1-lift);c.f('rel',lift,1,1.3);c.tr('sarrow',0,18*(1-lift));
+    let k,title,cap;
+    if(tgt<=0){k='closed';title='Closed';cap=`System pressure (${Math.round(Pd)} psi) is below the 950 psi cracking pressure. The spring holds the poppet on its seat and every drop of pump flow goes to the system.`;}
+    else if(tgt<0.95){k='partial';title='Cracking open';cap='Pressure under the poppet now beats the spring. The poppet lifts a little and part of the pump flow escapes to the reservoir while the rest still reaches the system.';}
+    else{k='open';title='Fully open, relieving';cap=`The load asks for more than the valve allows, so the poppet is fully lifted and pump flow returns to the reservoir. Pressure stops near ${Math.round(Pd)} psi; the climb above cracking pressure is the pressure override.`;}
+    return {g:[Pd],k,title,cap};}});
+
+V.push({key:'sequence',name:'Sequence valve',sub:'Runs a second actuator only after the first',scale:1000,
+  slider:{label:'Primary circuit pressure',min:0,max:1000,value:300,mark:600,markL:'setting'},
+  modes:[{id:'fwd',label:'Forward flow'},{id:'rev',label:'Return flow'}],sliderOff:m=>m==='rev',
+  note:'Opens to the secondary circuit at 600 psi. The spring chamber drains externally.',
+  gauges:[{label:'Primary (inlet)',max:1000,set:600,col:'#c8102e'},{label:'Secondary (outlet)',max:1000,col:'#e8711a'}],
+  svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Sequence valve cutaway">
+    ${zpipe('in','M14 255 H152',26)}${zpipe('in','M60 255 V136',18)}${zpipe('drain','M152 102 H130 V18',10)}${zpipe('out','M408 195 H546',26)}
+    ${spoolBody({drain:'ext',pilot:'in',check:true})}
+    <rect x="140" y="351" width="10" height="16" rx="2" fill="url(#steelV)" class="stl"/>
+    ${F('pump','M18 255 H150')}${F('prim','M60 250 V140')}${F('sec','M410 195 H542')}
+    ${L('Adjustment knob',320,16,'start',[318,12,312,12])}${L('External drain\nto reservoir',148,24)}
+    ${L('Biasing spring',420,124,'start',[418,120,298,120])}${L('To primary\nactuator',60,104,'middle')}
+    ${L('Inlet',18,234)}${L('To secondary\nactuator',430,152)}
+    ${L('Balanced spool',420,252,'start',[418,248,304,205])}${L('Bypass check valve',420,330,'start',[418,326,392,312])}
+    ${L('Internal pilot line',140,424,'end',[144,418,202,362])}
+    </svg>`;},
+  symbol(){return seqSymbol(true);},
+  init(st){st.chk=0;},
+  auto(t,st){const c=t%16;if(c<11){st.mode='fwd';st.P=120+800*(0.5-0.5*Math.cos(c/11*2*Math.PI));}else st.mode='rev';},
+  frame(c,st){
+    const fwd=st.mode==='fwd',Pin=fwd?st.P:80,tgt=fwd?ramp(Pin,580,640):0;
+    const lift=phys(st,'lift',tgt,c.dt);st.chk=phys(st,'chk_',fwd?0:1,c.dt);const chk=st.chk;
+    const Pout=fwd?40+Math.max(0,Pin-40)*ramp(lift,0.1,0.6):300;
+    applySpool(c,lift*42,chk);
+    c.z('in',Pin,fwd?'P':'T');c.z('pilot',Pin,'pilot');c.z('out',Pout,fwd?'P':'T');c.z('drain',6,'D');
+    const open=ramp(lift,0.15,1);
+    c.f('pump',fwd?1:chk,fwd?1:-1,1,fwd?'P':'T');c.f('prim',fwd?1-ramp(Pin,540,590):0);c.f('fwd',fwd?open:0);c.f('sec',fwd?open:chk,fwd?1:-1,1,fwd?'P':'T');c.f('rev',fwd?0:chk,1,1,'T');
+    c.tr('sarrow',0,18*(1-lift));c.tr('sball',-8*chk,0);
+    let k,title,cap;
+    if(!fwd){k='reverse';title='Return flow through bypass';cap='Fluid returning from the secondary actuator pushes the bypass check ball off its seat and flows straight back to the inlet, skipping the spool, which stays closed.';}
+    else if(tgt<=0){k='closed';title='Closed';cap=`Inlet pressure (${Math.round(Pin)} psi) reaches the bottom of the spool through the internal pilot line but is below the 600 psi spring setting. The primary actuator moves first; nothing reaches the outlet.`;}
+    else{k=tgt>0.95?'open':'partial';title=tgt>0.95?'Open to secondary':'Opening';cap='The primary actuator has stalled, so inlet pressure climbs to 600 psi and lifts the balanced spool. Flow now passes to the secondary actuator while the primary circuit keeps its pressure.';}
+    return {g:[Pin,Pout],k,title,cap};}});
+
+V.push({key:'counterbalance',name:'Counterbalance valve',sub:'Holds a load and lowers it smoothly',scale:1000,
+  slider:{label:'Pump pressure pushing the load down',min:0,max:150,value:0,mark:33,markL:'opens'},
+  modes:[{id:'lower',label:'Lower load'},{id:'raise',label:'Raise load'}],sliderOff:m=>m==='raise',
+  note:'Set at 650 psi. The load alone creates 600 psi under the piston.',
+  gauges:[{label:'Cylinder (inlet)',max:1000,set:650,col:'#c8102e'},{label:'Outlet to DCV',max:1000,col:'#d4a017'}],
+  svg(){return `<svg viewBox="0 0 700 440" role="img" aria-label="Counterbalance valve cutaway with cylinder">
+    ${zpipe('in','M118 380 H205 V255 H302',14)}${zpipe('rod','M118 214 H170 V12',14)}${zpipe('out','M558 195 H690',26)}
+    <rect x="40" y="200" width="80" height="192" rx="6" fill="url(#steelV)" class="stl"/>
+    ${Z('rodz','rod',48,204,64,56)}${Z('capz','in',48,278,64,110)}
+    ${F('cap','M118 380 H192 Q205 380 205 367 V268 Q205 255 218 255 H302',10)}${F('rodf','M170 16 V200 Q170 214 156 214 H122',10)}${F('outp','M560 195 H686')}
+    <rect data-p="piston" x="48" y="260" width="64" height="18" rx="2" fill="url(#steelV)" class="stl"/>
+    <rect data-p="rod" x="72" y="90" width="16" height="170" fill="url(#steelV)" class="stl"/>
+    <g data-p="load"><rect x="26" y="40" width="108" height="24" rx="3" fill="#4b5561" stroke="var(--edge)"/><rect x="36" y="64" width="88" height="24" rx="3" fill="#5c6774" stroke="var(--edge)"/><text class="ltxt" x="80" y="57">Load</text></g>
+    <g transform="translate(150 0)">${spoolBody({drain:'int',pilot:'in',check:true})}</g>
+    ${L('Adjustment knob',470,16,'start',[468,12,462,12])}${L('Internal drain',510,82,'start',[508,78,486,102])}
+    ${L('Outlet to\ndirectional valve',580,152)}${L('Spool',592,248,'start',[588,244,454,205])}
+    ${L('Bypass check valve',580,330,'start',[578,326,542,312])}${L('Internal pilot line',352,432,'middle',[352,420,352,366])}
+    ${L('Inlet',250,238,'middle')}${L('From directional\nvalve (pump)',180,26)}${L('Vertical cylinder',80,416,'middle')}
+    </svg>`;},
+  symbol(){return seqSymbol(false);},
+  init(st){st.py=262;st.chk=0;},
+  auto(t,st){const c=t%16;if(c<3){st.mode='lower';st.P=0;}else if(c<8){st.mode='lower';st.P=70;}else if(c<14)st.mode='raise';else{st.mode='lower';st.P=0;}},
+  frame(c,st){
+    const lower=st.mode==='lower';let Pin,Pout,tgt,moving=0;
+    if(lower){Pin=600+1.5*st.P;tgt=ramp(Pin,645,700);Pout=30;}else{Pin=640;Pout=700;tgt=0;}
+    const lift=phys(st,'lift',tgt,c.dt);st.chk=phys(st,'chk_',lower?0:1,c.dt);const chk=st.chk;
+    if(lower){if(lift>0.05&&st.py<368){st.py=Math.min(368,st.py+lift*28*c.dt);moving=lift;}}
+    else if(st.py>250){st.py=Math.max(250,st.py-26*c.dt);moving=chk;}
+    const py=st.py;
+    c.attr('rodz',{height:py-204});c.attr('capz',{y:py+18,height:388-(py+18)});c.attr('piston',{y:py});c.attr('rod',{y:py-170});c.tr('load',0,py-262);
+    applySpool(c,lift*42,chk);
+    c.z('in',Pin,'P');c.z('pilot',Pin,'pilot');c.z('out',lower?Pout:Pout,lower?(moving?'met':'T'):'P');c.z('drain',Pout,lower?'T':'P');c.z('rod',lower?st.P*1.5:10,lower?'P':'T');
+    const d=lower?1:-1;
+    c.f('fwd',lower?moving:0,1,1,'met');c.f('rev',lower?0:moving,1,1,'P');c.f('cap',moving,d,1,'P');c.f('rodf',lower?(st.P>5?moving:0):moving,d,1,lower?'P':'T');c.f('outp',moving,d,1,lower?'met':'P');
+    c.tr('sarrow',0,18*(1-lift));c.tr('sball',-8*chk,0);
+    let k,title,cap;
+    if(lower&&tgt<=0){k='closed';title='Closed, load held';cap=`The load presses ${Math.round(Pin)} psi into the cylinder. That is below the 650 psi setting, so the spool stays shut and the load cannot drift or run away.`;}
+    else if(lower&&py>=368){k='closed';title='Load fully lowered';cap='The piston has reached the bottom of its stroke. Switch to Raise load to lift it back up.';}
+    else if(lower){k='partial';title='Metering, load lowering';cap=`Pump pressure on the rod side adds to the load and lifts inlet pressure to ${Math.round(Pin)} psi. The spool cracks open just enough to meter fluid out, so the load comes down under control instead of falling.`;}
+    else if(py>250){k='reverse';title='Raising through bypass';cap='Pump flow enters the outlet port, lifts the bypass check ball and pours freely into the cylinder to raise the load. The spool stays closed the whole time.';}
+    else{k='closed';title='Load fully raised';cap='The piston is at the top. The check ball reseats and the closed spool locks the load in place.';}
+    return {g:[Pin,Pout],k,title,cap};}});
+
+V.push({key:'reducing',name:'Pressure-reducing valve',sub:'Gives one branch a lower, steady pressure',scale:1000,
+  slider:{label:'Inlet pressure',min:0,max:1000,value:400,mark:600,markL:'setting'},
+  note:'Normally open. Holds the outlet at 600 psi. The spring chamber drains externally.',
+  gauges:[{label:'Inlet (P)',max:1000,col:'#c8102e'},{label:'Outlet (A)',max:1000,set:600,col:'#d4a017'}],
+  svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Pressure-reducing valve cutaway">
+    ${zpipe('in','M14 277 H152',30)}${zpipe('out','M408 217 H546',30)}${zpipe('drain','M152 102 H110 V18',10)}
+    ${bd(150,60,260,340,10)}
+    ${Z('sprch','drain',250,80,60,85)}${Z('mid','out',250,195,60,105)}${Z('pch','sense',250,345,60,37)}
+    ${Z(null,'in',150,260,101,35)}${Z(null,'out',309,200,101,35)}${Z(null,'drain',150,95,101,15)}
+    ${Z(null,'sense',350,234,14,152)}${Z(null,'sense',290,372,74,14)}
+    ${F('thruA','M18 277 H266 Q280 277 280 263 V246')}${F('thruB','M280 246 V231 Q280 217 294 217 H542')}
+    ${plate(255,86,50,6)}${spr('spring',[280,92,165,21,5,false])}${screw(275,12,10,76)}${nut(262,44,36,16)}${knob(243,2,74,22)}
+    <g data-p="spool"><rect x="251" y="165" width="58" height="30" rx="3" fill="url(#steelV)" class="stl"/><rect x="270" y="195" width="20" height="105" fill="url(#steelV)" class="stl"/><rect x="251" y="300" width="58" height="45" rx="3" fill="url(#steelV)" class="stl"/></g>
+    ${L('Adjustment knob',326,16,'start',[324,12,317,12])}${L('External drain (T)',118,24)}
+    ${L('Spool',420,160,'start',[418,156,309,178])}${L('Inlet (P)',18,252)}${L('Outlet (A)',430,192)}
+    ${L('Pressure-sensing\npilot line',420,316,'start',[418,312,364,312])}${L('Throttling edge',150,340,'end',[154,336,252,300])}
+    </svg>`;},
+  symbol(){return symWrap('0 0 260 170',`<line x1="10" y1="95" x2="100" y2="95"/><rect x="100" y="65" width="80" height="60"/><line x1="180" y1="95" x2="250" y2="95"/>${sDot(215,95)}<path class="dsh" d="M215 95 V148 H140 V125"/>${sSpring(140,65,true)}<path class="dsh" d="M152 39 H200 V50"/>${sTank(200,50)}${sArrow('sarrow',108,172,95,0)}`);},
+  init(){},
+  auto(t,st){st.P=200+780*(0.5-0.5*Math.cos(t*0.45));},
+  frame(c,st){
+    const Pin=st.P,Pout=Pin<=600?Pin:600+(Pin-600)*0.025;
+    const sT=Pin<=580?0:5+Math.min(1,(Pin-580)/420)*28;const s=phys(st,'s',sT,c.dt,150,17,0,40);
+    c.attr('sprch',{height:Math.max(0,85-s)});c.attr('mid',{y:195-s});c.attr('pch',{y:345-s,height:37+s});
+    c.tr('spool',0,-s);c.spring('spring',[280,92,165-s,21,5,false]);
+    const reg=Pin>600;
+    c.z('in',Pin,'P');c.z('out',Pout,reg?'met':'P');c.z('sense',Pout,'pilot');c.z('drain',6,'D');
+    const open=clamp((300-s-260)/35);
+    c.f('thruA',Pin>15?1:0,1,1,'P');c.f('thruB',Pin>15?1:0,1,reg?1.35:1,reg?'met':'P');c.tr('sarrow',0,-14*ramp(s,6,33));
+    let k,title,cap;
+    if(!reg){k='open';title='Wide open, unregulated';cap=`Inlet pressure (${Math.round(Pin)} psi) is below the 600 psi setting. The spring holds the spool down, the valve is fully open and the outlet sees the same pressure as the inlet.`;}
+    else{k='partial';title='Regulating';cap=`Outlet pressure, fed under the spool by the sensing line, pushes the spool up against the spring. The throttling edge leaves about ${Math.round(open*100)}% of the inlet open, dropping ${Math.round(Pin)} psi down to a steady 600 psi at the outlet.`;}
+    return {g:[Pin,Pout],k,title,cap};}});
+
+V.push({key:'unloading',name:'Unloading valve',sub:'Idles the pump once the system is charged',scale:1000,
+  slider:{label:'Remote pilot (system) pressure',min:0,max:1000,value:400,mark:800,markL:'setting'},
+  note:'Unloads the pump when the remote pilot line reaches 800 psi. A check valve keeps the system charged.',
+  gauges:[{label:'Pump outlet',max:1000,col:'#c8102e'},{label:'Remote pilot',max:1000,set:800,col:'#e8711a'}],
+  svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Unloading valve cutaway">
+    ${zpipe('in','M14 255 H152',26)}${zpipe('in','M80 255 V140',18)}${zpipe('sys','M80 120 V14',18)}${zpipe('pilot','M14 359 H152',12)}${zpipe('out','M408 195 H546',26)}
+    <rect x="66" y="118" width="28" height="24" rx="3" fill="url(#steelV)" class="stl"/><path d="M73 136 L80 124 L87 136Z" fill="var(--edge)"/>
+    ${spoolBody({drain:'int',pilot:'remote',check:false})}
+    ${F('pump','M18 255 H150')}${F('sys','M80 250 V18')}${F('outp','M410 195 H542')}
+    ${L('Adjustment knob',320,16,'start',[318,12,312,12])}${L('Internal drain',420,96,'start',[418,92,340,102])}
+    ${L('Biasing spring',420,130,'start',[418,126,298,130])}${L('To system and\naccumulator',96,34)}${L('Check valve',100,134)}
+    ${L('Inlet from pump',18,290)}${L('Outlet to reservoir',430,166)}${L('Spool',420,252,'start',[418,248,304,205])}
+    ${L('Remote pilot port',18,388)}
+    </svg>`;},
+  symbol(){return symWrap('0 0 260 180',`${sText(12,100,'In')}<line x1="34" y1="95" x2="100" y2="95"/><rect x="100" y="65" width="80" height="60"/><line x1="180" y1="95" x2="222" y2="95"/>${sText(226,100,'Out')}${sSpring(140,65,true)}<path class="dsh" d="M60 145 H140 V125"/>${sText(56,166,'Remote pilot line')}${sArrow('sarrow',108,172,95,18)}`);},
+  init(){},
+  auto(t,st){const c=t%12;if(c<6)st.P=300+550*(c/6);else if(c<10)st.P=850-25*((c-6)/4);else st.P=825-525*((c-10)/2);},
+  frame(c,st){
+    const Pp=st.P,ut=ramp(Pp,790,805),lift=phys(st,'lift',ut,c.dt);
+    const Pin=Pp*(1-lift)+60*lift;
+    applySpool(c,lift*42,null);
+    c.z('in',Pin,'P');c.z('sys',Pp,'P');c.z('pilot',Pp,'pilot');c.z('out',12,'T');c.z('drain',12,'T');
+    c.f('pump',1);c.f('sys',1-lift);c.f('fwd',lift,1,1.3);c.f('outp',lift,1,1.3);
+    c.tr('sarrow',0,18*(1-lift));
+    let k,title,cap;
+    if(ut<0.5){k='closed';title='Closed, pump loaded';cap=`Remote pilot pressure (${Math.round(Pp)} psi) is below the 800 psi setting. The spool stays down and the pump drives all of its flow through the check valve to charge the system.`;}
+    else{k='open';title='Open, pump unloaded';cap=`System pressure in the remote pilot line has lifted the spool. Pump flow now dumps to the reservoir at only about ${Math.round(Pin)} psi, saving power and heat while the check valve keeps the system charged.`;}
+    return {g:[Pin,Pp],k,title,cap};}});
+
+const PSTEPS=['Fluid from the pump enters the inlet port.','It passes through the orifice and fills the chamber above the main spool and the pilot chamber.','Equal pressure above the spool plus the biasing spring keep the spool closed.','At the setting, pilot pressure pushes the dart off its seat.','Pilot fluid drains to the reservoir past the open dart.','The orifice can\u2019t keep up, pressure above the spool drops and the spool lifts.','Excess pump flow passes the main spool to the reservoir, holding pressure near the setting.'];
+V.push({key:'pilot-relief',name:'Pilot-operated relief valve',sub:'Big flow, tight pressure control',scale:1100,
+  slider:{label:'Pressure the load demands',min:0,max:1100,value:700,mark:1000,markL:'setting'},
+  note:'The pilot dart is set at 1,000 psi. A light biasing spring holds the main spool.',
+  gauges:[{label:'Pump / inlet',max:1200,set:1000,col:'#c8102e'},{label:'Above main spool',max:1200,col:'#e8711a'}],
+  steps:PSTEPS,
+  svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Pilot-operated relief valve cutaway">
+    ${zpipe('in','M14 255 H152',40)}${zpipe('tank','M280 398 V436',36)}
+    ${bd(150,96,260,304,12)}${bd(170,40,250,64,8)}
+    ${Z(null,'in',150,235,86,40)}${Z('low','in',235,210,90,108)}${Z(null,'tank',262,318,36,82)}
+    <rect class="bd" x="235" y="318" width="27" height="12"/><rect class="bd" x="298" y="318" width="27" height="12"/>
+    ${Z('chm','ch',235,110,90,60)}${Z(null,'ch',262,82,12,30)}${Z(null,'ch',232,58,60,24)}
+    <rect class="bd" x="292" y="58" width="8" height="8"/><rect class="bd" x="292" y="74" width="8" height="8"/>
+    ${Z(null,'pd',300,58,102,24)}${Z(null,'pd',372,82,12,304)}${Z(null,'pd',298,374,86,12)}
+    ${F('pump','M18 255 H232')}${F('pil','M280 222 V120 Q280 112 272 108 Q268 104 268 96 V80 Q268 70 278 70 H366 Q378 70 378 82 V368 Q378 380 366 380 H280',7)}${F('main','M226 255 Q262 255 270 272 Q280 300 280 330 V432')}
+    ${spr('mspring',[280,114,170,26,4,false])}
+    <g data-p="spool"><rect x="235" y="170" width="90" height="40" rx="3" fill="url(#steelV)" class="stl"/>${Z(null,'ch',277,170,6,40)}<rect x="270" y="210" width="20" height="70" fill="url(#steelV)" class="stl"/><rect x="245" y="280" width="70" height="38" rx="4" fill="url(#steelV)" class="stl"/></g>
+    ${spr('pspring',[70,319,396,8,7,true])}
+    <g data-p="dart"><path d="M289 70 L303 61 L319 61 L319 79 L303 79Z" fill="url(#bronzeH)" class="stl"/></g>
+    ${plate(396,56,6,28).replace('steelH','steelV')}${screw(402,64,24,12,true)}${knobH(424,34,26,72)}
+    ${L('Adjustment knob',458,40)}${L('Dart',306,22,'middle',[306,28,306,60])}${L('Pilot chamber',214,22,'middle',[214,28,248,62])}
+    ${L('Biasing spring',140,140,'end',[144,136,258,140])}${L('Orifice',140,190,'end',[144,186,279,190])}${L('Main spool',140,318,'end',[144,314,246,300])}
+    ${L('Inlet from pump',18,224)}${L('To reservoir',306,430)}${L('Pilot drain',420,250,'start',[418,246,384,246])}
+    </svg>`;},
+  symbol(){return symWrap('0 0 260 180',`<rect class="dsh" x="22" y="10" width="216" height="160"/><line x1="0" y1="110" x2="80" y2="110"/>${sDot(50,110)}<rect x="80" y="85" width="70" height="50"/><path d="M150 110 H210 V140"/>${sTank(210,140)}${sDot(196,110)}${sSpring(115,85,false)}<path class="dsh" d="M50 110 V150 H92 V135"/><path class="dsh" d="M50 110 V44 H160 M115 44 V57"/>${sDot(115,44)}<rect x="160" y="30" width="34" height="30"/><path d="M194 45 H196 V110"/>${sSpring(177,30,true)}${sArrow('sarrow',88,142,110,16)}${sArrow('sarrow2',164,191,45,9)}`);},
+  init(){},
+  auto(t,st){st.P=600+480*(0.5-0.5*Math.cos(t*0.45));},
+  frame(c,st){
+    const P=st.P,dT=ramp(P,975,1010),d=phys(st,'d',dT,c.dt,200,20),m=phys(st,'m',ramp(d,0.25,0.9),c.dt,90,14);
+    const Pd=P<=975?P:975+Math.min(P-975,125)*0.25,Pch=Pd*(1-0.4*d),s=m*22;
+    c.tr('dart',d*10,0);c.spring('pspring',[70,319+d*10,396,8,7,true]);
+    c.attr('chm',{height:Math.max(0,60-s)});c.attr('low',{y:210-s,height:108+s});c.tr('spool',0,-s);c.spring('mspring',[280,114,170-s,26,4,false]);
+    c.z('in',Pd,'P');c.z('ch',Pch,'pilot');c.z('pd',30+150*d,'D');c.z('tank',10+300*m,'T');
+    c.f('pump',P>0?1:0);c.f('pil',d,1,0.8,'pilot');c.f('main',m,1,1.4);
+    c.tr('sarrow',0,16*(1-m));c.tr('sarrow2',0,9*(1-d));
+    let k,title,cap,on;
+    if(dT<=0&&d<0.05){k='closed';title='Closed';on=[1,2,3];cap=`Pump pressure is ${Math.round(Pd)} psi. Through the orifice the same pressure sits above the main spool, so the spool is balanced and the light biasing spring keeps it shut.`;}
+    else if(m<0.3){k='partial';title='Pilot dart opening';on=[4,5];cap='Pilot chamber pressure has reached 1,000 psi. The dart unseats and a small pilot flow drains away, so the pressure above the main spool starts to fall.';}
+    else{k='open';title='Main spool open, relieving';on=[6,7];cap=`Pressure above the spool (${Math.round(Pch)} psi) is now well below inlet pressure (${Math.round(Pd)} psi). The spool lifts and full pump flow dumps to the reservoir with very little pressure override.`;}
+    return {g:[Pd,Pch],k,title,cap,on};}});
+
+/* ---------- UI ---------- */
+const rail=document.querySelector('.rail'),view=document.getElementById('view');
+V.forEach(v=>{const b=document.createElement('button');b.setAttribute('role','tab');b.dataset.key=v.key;b.innerHTML=`<b>${v.name}</b><span>${v.sub}</span>`;b.addEventListener('click',()=>{if(location.hash.slice(1)!==v.key)location.hash=v.key;else select(v.key);});rail.appendChild(b);});
+
+function gaugeSVG(g){let t='';for(let i=0;i<=10;i++){const a=(-180+18*i)*Math.PI/180,r1=i%5?36:33;t+=`<line stroke="var(--muted)" stroke-width="${i%5?1:1.6}" x1="${(60+r1*Math.cos(a)).toFixed(1)}" y1="${(62+r1*Math.sin(a)).toFixed(1)}" x2="${(60+39*Math.cos(a)).toFixed(1)}" y2="${(62+39*Math.sin(a)).toFixed(1)}"/>`;}
+  let set='';if(g.set){const a=(-180+180*g.set/g.max)*Math.PI/180;set=`<line class="gset" x1="${(60+44*Math.cos(a)).toFixed(1)}" y1="${(62+44*Math.sin(a)).toFixed(1)}" x2="${(60+56*Math.cos(a)).toFixed(1)}" y2="${(62+56*Math.sin(a)).toFixed(1)}"/>`;}
+  return `<svg viewBox="0 0 120 72" aria-hidden="true"><path class="gtrack" d="M10 62 A50 50 0 0 1 110 62"/><path class="gfill" data-g="f" d="M10 62 A50 50 0 0 1 110 62" pathLength="100" stroke="${g.col}" stroke-dasharray="100" stroke-dashoffset="100"/>${t}${set}<line class="gneedle" data-g="n" x1="60" y1="62" x2="60" y2="30"/><circle class="ghub" cx="60" cy="62" r="4.5"/></svg>`;}
+
+let cur=null;
+function select(key){
+  const v=V.find(x=>x.key===key)||V[0];
+  rail.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.key===v.key)));
+  const sl=v.slider,mk=sl.mark!=null?((sl.mark-sl.min)/(sl.max-sl.min)*100):null;
+  view.innerHTML=`<div class="main">
+   <div class="card stagecard"><div class="vtitle"><h2>${v.name}</h2><span class="pill" data-k="closed"><i></i><span data-ui="title"></span></span></div>
+     <div class="stage">${v.svg()}</div>
+     <div class="trace"><div class="th"><span style="margin:0">Pressure over the last 10 seconds</span><div>${v.gauges.map(g=>`<span><i style="background:${g.col}"></i>${g.label}</span>`).join('')}</div></div>
+       <svg viewBox="0 0 600 130" preserveAspectRatio="none" aria-hidden="true"><line class="tgrid" x1="0" y1="124" x2="600" y2="124"/><line class="tgrid" x1="0" y1="66" x2="600" y2="66"/><line class="tgrid" x1="0" y1="8" x2="600" y2="8"/>${v.gauges[0].set||v.gauges[1]&&v.gauges[1].set?`<line class="tset" data-t="set" x1="0" x2="600"/>`:''}${v.gauges.map((g,i)=>`<polyline class="tline" data-t="${i}" stroke="${g.col}" points=""/>`).join('')}<text class="tlab" x="4" y="20">${v.gauges[0].max} psi</text><text class="tlab" x="4" y="120">0</text></svg></div>
+   </div>
+   <aside class="side">
+     <div class="card ctrl">${v.modes?`<div class="seg" role="group" aria-label="Operating mode">${v.modes.map(m=>`<button data-mode="${m.id}" aria-pressed="false">${m.label}</button>`).join('')}</div>`:''}
+       <div class="sl"><label for="rng">${sl.label}</label><output><span>0</span> <small>psi</small></output><div class="track">${mk!=null?`<span class="mk" style="left:calc(${mk}% )" data-l="${sl.markL}"></span>`:''}<input id="rng" type="range" min="${sl.min}" max="${sl.max}" step="1" value="${sl.value}"></div></div>
+       <div class="btns"><button class="btn" data-ui="auto" aria-pressed="false">Auto</button><button class="btn" data-ui="slow" aria-pressed="false">Slow motion</button></div>
+       <p class="note">${v.note}</p></div>
+     <div class="card gauges">${v.gauges.map(g=>`<div class="gauge">${gaugeSVG(g)}<div class="gval"><span>0</span> <small>psi</small></div><div class="glab">${g.label}</div></div>`).join('')}</div>
+     <div class="card explain"><h3>What’s happening</h3><p data-ui="cap"></p>${v.steps?`<ol class="steps">${v.steps.map((s,i)=>`<li data-step="${i+1}"><b>${i+1}</b><span>${s}</span></li>`).join('')}</ol>`:''}</div>
+     <div class="card symcard"><h3>Schematic symbol</h3><div class="sym">${v.symbol()}</div></div>
+   </aside></div>`;
+  const parts={},zones={},springs={},flows={};
+  view.querySelectorAll('[data-p]').forEach(e=>(parts[e.dataset.p]=parts[e.dataset.p]||[]).push(e));
+  view.querySelectorAll('[data-z]').forEach(e=>(zones[e.dataset.z]=zones[e.dataset.z]||[]).push(e));
+  view.querySelectorAll('[data-s]').forEach(e=>(springs[e.dataset.s]=springs[e.dataset.s]||[]).push(e));
+  const NS='http://www.w3.org/2000/svg';
+  view.querySelectorAll('[data-f]').forEach(p=>{const len=p.getTotalLength(),n=Math.max(4,Math.round(len/17));const g=document.createElementNS(NS,'g');g.style.opacity='0';const segs=[];
+    for(let i=0;i<n;i++){const a=document.createElementNS(NS,'line');a.setAttribute('class','pt0');const b=document.createElementNS(NS,'line');b.setAttribute('class','pt1');g.appendChild(a);g.appendChild(b);segs.push([a,b]);}
+    const sm=document.createElementNS(NS,'path');sm.setAttribute('d',p.getAttribute('d'));sm.setAttribute('class','stream');sm.setAttribute('pathLength','1');p.after(sm);sm.after(g);(flows[p.dataset.f]=flows[p.dataset.f]||[]).push({p,len,n,g,segs,u:Math.random()*20,a:0,r:0,sm,sw:+(p.dataset.sw||14),sc:null});});
+  const zc={};
+  const st={P:sl.value,mode:v.modes?v.modes[0].id:null,auto:!reduced,t:0};v.init(st);
+  const c={dt:0,
+    tr(n,x,y){(parts[n]||[]).forEach(e=>e.setAttribute('transform',`translate(${x.toFixed(2)} ${y.toFixed(2)})`));},
+    attr(n,o){(parts[n]||[]).forEach(e=>{for(const k in o)e.setAttribute(k,o[k].toFixed(2));});},
+    spring(n,args){const [b,f]=helix(...args);(springs[n]||[]).forEach(e=>e.setAttribute('d',e.dataset.w==='b'?b:f));},
+    z(n,psi,role){const tgt=roleColor(role,psi/v.scale);let cc=zc[n];if(!cc||c.first)cc=zc[n]=tgt.slice();else for(let i=0;i<3;i++)cc[i]+=(tgt[i]-cc[i])*Math.min(1,c.dt*6);
+      const col=`rgb(${cc.map(Math.round).join(',')})`;(zones[n]||[]).forEach(e=>e.setAttribute(e.hasAttribute('data-zs')?'stroke':'fill',col));},
+    f(n,amt,dir=1,spd=1,role='P'){(flows[n]||[]).forEach(fl=>{fl.a=ease(fl.a,clamp(amt),c.dt,8);fl.g.style.opacity=fl.a.toFixed(3);
+      fl.r=ease(fl.r,amt>0.02?1:0,c.dt,amt>0.02?2.2:5);const col=roleColor(role,0.85);if(!fl.sc)fl.sc=col.slice();for(let i=0;i<3;i++)fl.sc[i]+=(col[i]-fl.sc[i])*Math.min(1,c.dt*6);
+      const sm=fl.sm,wob=reduced?1:1+0.06*Math.sin(st.t*9+fl.len);sm.style.stroke=`rgb(${fl.sc.map(Math.round).join(',')})`;sm.style.strokeWidth=(fl.sw*(0.45+0.55*fl.a)*wob).toFixed(1);sm.style.opacity=(Math.min(fl.a*1.4,1)*0.92).toFixed(3);sm.style.strokeDasharray=fl.r.toFixed(3)+' 1.01';sm.style.strokeDashoffset=dir<0?(-(1-fl.r)).toFixed(3):'0';
+      if(fl.a<0.01)return;
+      if(!reduced)fl.u+=dir*fl.a*spd*c.dt*95;const sp=fl.len/fl.n;
+      for(let i=0;i<fl.n;i++){const s=(((fl.u+i*sp)%fl.len)+fl.len)%fl.len;const p1=fl.p.getPointAtLength(s),p0=fl.p.getPointAtLength(clamp(s-6*dir,0,fl.len));
+        const edge=Math.min(1,s/12,(fl.len-s)/12);const [a,b]=fl.segs[i];
+        for(const e of [a,b]){e.setAttribute('x1',p0.x.toFixed(1));e.setAttribute('y1',p0.y.toFixed(1));e.setAttribute('x2',p1.x.toFixed(1));e.setAttribute('y2',p1.y.toFixed(1));e.style.opacity=edge.toFixed(2);}}});}};
+  const q=s=>view.querySelector(s);
+  const range=q('#rng'),outv=q('.sl output span'),autoB=q('[data-ui=auto]'),slowB=q('[data-ui=slow]'),titleEl=q('[data-ui=title]'),pill=q('.pill'),capEl=q('[data-ui=cap]'),slw=q('.sl');
+  const gEls=[...view.querySelectorAll('.gauge')].map(g=>({n:g.querySelector('[data-g=n]'),f:g.querySelector('[data-g=f]'),v:g.querySelector('.gval span')}));
+  const modeBtns=[...view.querySelectorAll('.seg button')],stepEls=[...view.querySelectorAll('.steps li')];
+  const tl=[...view.querySelectorAll('.tline')],tset=q('[data-t=set]');const tmax=v.gauges[0].max;
+  if(tset){const sp=v.gauges[0].set||v.gauges[1].set;const y=(124-sp/tmax*116).toFixed(1);tset.setAttribute('y1',y);tset.setAttribute('y2',y);}
+  const hist=v.gauges.map(()=>[]);let sampleT=0;
+  function setAuto(on){st.auto=on;autoB.setAttribute('aria-pressed',String(on));autoB.textContent=on?'Pause auto':'Auto';}
+  let slow=false;slowB.addEventListener('click',()=>{slow=!slow;slowB.setAttribute('aria-pressed',String(slow));});
+  autoB.addEventListener('click',()=>setAuto(!st.auto));
+  range.addEventListener('input',()=>{st.P=+range.value;setAuto(false);});
+  modeBtns.forEach(b=>b.addEventListener('click',()=>{st.mode=b.dataset.mode;setAuto(false);}));
+  setAuto(st.auto);
+  const gs=v.gauges.map(()=>({x:0,x_v:0}));
+  let lm=null,lt='',lc='',lo='',lk='';c.first=true;
+  cur={tick(rdt){
+    const dt=rdt*(slow?0.3:1);c.dt=dt;
+    if(st.auto){st.t+=dt;v.auto(st.t,st);range.value=st.P;}
+    if(st.mode!==lm){lm=st.mode;modeBtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===st.mode)));const off=v.sliderOff?v.sliderOff(st.mode):false;range.disabled=off;slw.classList.toggle('off',off);}
+    outv.textContent=Math.round(st.P);
+    const r=v.frame(c,st);c.first=false;
+    r.g.forEach((val,i)=>{const g=v.gauges[i];const x=phys(gs[i],'x',clamp(val/g.max),Math.min(dt,0.03),260,22);gEls[i].n.setAttribute('transform',`rotate(${(-90+180*x).toFixed(1)} 60 62)`);gEls[i].f.setAttribute('stroke-dashoffset',(100-100*x).toFixed(1));gEls[i].v.textContent=Math.round(val);});
+    sampleT+=rdt;if(sampleT>=0.05){sampleT=0;r.g.forEach((val,i)=>{const h=hist[i];h.push(val);if(h.length>200)h.shift();tl[i].setAttribute('points',h.map((y,j)=>`${(600-(h.length-1-j)*3).toFixed(0)},${(124-clamp(y/tmax)*116).toFixed(1)}`).join(' '));});}
+    if(r.title!==lt){titleEl.textContent=r.title;lt=r.title;}
+    if(r.k!==lk){pill.dataset.k=r.k;lk=r.k;}
+    if(r.cap!==lc){capEl.textContent=r.cap;lc=r.cap;}
+    if(stepEls.length){const kk=(r.on||[]).join();if(kk!==lo){lo=kk;stepEls.forEach(li=>li.classList.toggle('on',(r.on||[]).includes(+li.dataset.step)));}}
+  }};
+  cur.tick(0.016);
+}
+let last=0;
+function loop(ts){const dt=last?Math.min(0.05,(ts-last)/1000):0.016;last=ts;if(cur)cur.tick(dt);requestAnimationFrame(loop);}
+window.addEventListener('hashchange',()=>select(location.hash.slice(1)));
+select(location.hash.slice(1)||'check');
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
