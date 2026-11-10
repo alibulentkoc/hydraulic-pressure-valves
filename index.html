@@ -3,170 +3,228 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Inside Pressure Control Valves</title>
+<title>Pressure control valves: animated cross-sections</title>
+<meta name="description" content="Interactive cross-section animations of hydraulic pressure control valves, with agricultural applications, calculators and quizzes for teaching.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&family=STIX+Two+Text:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#e8ecf0; --panel:#f8fafb; --ink:#13202c; --muted:#56636f; --rule:#cbd3db; --grid:rgba(30,80,130,.075);
-  --accent:#16344f; --accent-ink:#ffffff; --marker:#f2c230;
-  --steel:#bcc4cc; --hatch:#8c96a0; --edge:#36414c; --pipe:#a9b3bc;
-  --spring-back:#23476b; --spring-front:#5a98d4;
-  --font:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --bg:#E6E9EC; --panel:#F6F7F8; --ink:#1C232B; --muted:#56616D; --line:#C5CCD3;
+  --steel:#A5AEB7; --steel-dark:#66717C; --steel-light:#D3D8DD; --hatch:#7D8893; --rod:#C9D0D6; --rod-hi:#F1F4F6;
+  --hp:#C62E2E; --lp:#2563A8; --pilot:#D9822B; --met:#C9A227; --drain:#2F8F5B; --spring:#7A5AA6; --accent:#F2C230;
+  --edge:var(--steel-dark); --pipe:var(--steel);
+  --sans:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --math:"STIX Two Text","Times New Roman",Times,serif;
   color-scheme:light; box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0f151b; --panel:#161f28; --ink:#e5ecf2; --muted:#93a1ae; --rule:#2a3642; --grid:rgba(140,190,240,.06);
-    --accent:#a9cdf0; --accent-ink:#0f151b; --marker:#f2c230;
-    --steel:#5e6974; --hatch:#47515b; --edge:#0a0e12; --pipe:#55606a;
-    --spring-back:#1b3a58; --spring-front:#6aa7e2; color-scheme:dark;
+    --bg:#151A1F; --panel:#1E252C; --ink:#E3E8EC; --muted:#9BA7B3; --line:#34404B;
+    --steel:#5B6772; --steel-dark:#3B4550; --steel-light:#7A8792; --hatch:#45515C; --rod:#8E99A3; --rod-hi:#C3CBD2;
+    --hp:#E25858; --lp:#5C98E2; --pilot:#F0A04B; --met:#E2C04E; --drain:#55C08A; --spring:#A98AD8; --accent:#F2C230;
+    color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f151b; --panel:#161f28; --ink:#e5ecf2; --muted:#93a1ae; --rule:#2a3642; --grid:rgba(140,190,240,.06);
-  --accent:#a9cdf0; --accent-ink:#0f151b; --marker:#f2c230;
-  --steel:#5e6974; --hatch:#47515b; --edge:#0a0e12; --pipe:#55606a;
-  --spring-back:#1b3a58; --spring-front:#6aa7e2; color-scheme:dark;
+  --bg:#151A1F; --panel:#1E252C; --ink:#E3E8EC; --muted:#9BA7B3; --line:#34404B;
+  --steel:#5B6772; --steel-dark:#3B4550; --steel-light:#7A8792; --hatch:#45515C; --rod:#8E99A3; --rod-hi:#C3CBD2;
+  --hp:#E25858; --lp:#5C98E2; --pilot:#F0A04B; --met:#E2C04E; --drain:#55C08A; --spring:#A98AD8; --accent:#F2C230;
+  color-scheme:dark;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5}
-.wrap{max-width:1320px;margin:0 auto;padding:28px 20px 56px}
-header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 32px;margin-bottom:22px}
-header.top h1{margin:0;font-weight:800;font-stretch:118%;font-size:clamp(28px,4vw,44px);line-height:1.02;letter-spacing:-.01em;max-width:16ch}
-header.top p{margin:8px 0 0;color:var(--muted);max-width:56ch}
-.key{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13.5px;font-stretch:90%;color:var(--muted)}
-.key span{display:inline-flex;align-items:center;gap:7px}
-.key i{width:26px;height:10px;border-radius:5px;display:inline-block}
-.app{display:grid;grid-template-columns:220px minmax(0,1fr);gap:26px;align-items:start}
-.rail{display:flex;flex-direction:column;gap:4px;position:sticky;top:16px}
-.rail button{all:unset;cursor:pointer;display:block;padding:10px 12px 10px 16px;border-radius:10px;position:relative}
-.rail button b{display:block;font-weight:700;font-stretch:95%;font-size:15.5px;line-height:1.2}
-.rail button span{display:block;font-size:13px;color:var(--muted);font-stretch:92%;line-height:1.3;margin-top:2px}
-.rail button:hover{background:var(--panel)}
-.rail button[aria-selected="true"]{background:var(--panel);box-shadow:0 0 0 1px var(--rule)}
-.rail button[aria-selected="true"]::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:5px;border-radius:3px;background:var(--marker)}
-.rail button:focus-visible,.btn:focus-visible,.seg button:focus-visible,input[type=range]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-@media (max-width:1080px){
-  .app{grid-template-columns:1fr}
-  .rail{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px}
-  .rail button{flex:0 0 auto;padding:8px 14px}
-  .rail button span{display:none}
-  .rail button[aria-selected="true"]::before{left:12px;right:12px;top:auto;bottom:2px;width:auto;height:4px}
-}
-.main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,1fr);gap:20px;align-items:start}
-@media (max-width:860px){.main{grid-template-columns:1fr}}
-.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px}
-.stagecard{position:relative;overflow:hidden}
-.stage{background-color:var(--panel);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px;padding:12px 10px 8px;overflow-x:auto}
-.stage svg{display:block;width:100%;height:auto;min-width:440px}
-.vtitle{padding:14px 18px 10px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.vtitle h2{margin:0;font-weight:800;font-stretch:110%;font-size:clamp(20px,2.4vw,26px);line-height:1.1}
-.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--rule);font-weight:700;font-stretch:92%;font-size:14px}
-.pill i{width:10px;height:10px;border-radius:50%;background:#8b96a1;transition:background .25s}
-.pill[data-k="open"] i{background:#1f9a5a;box-shadow:0 0 0 4px rgba(31,154,90,.2)}
-.pill[data-k="partial"] i{background:#e8a41a;box-shadow:0 0 0 4px rgba(232,164,26,.22)}
-.pill[data-k="reverse"] i{background:#1f6fd1;box-shadow:0 0 0 4px rgba(31,111,209,.2)}
-.trace{padding:10px 14px 12px;border-top:1px solid var(--rule)}
-.trace .th{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;color:var(--muted);font-stretch:92%;flex-wrap:wrap}
-.trace .th span{display:inline-flex;align-items:center;gap:6px;margin-left:12px}
-.trace .th i{width:16px;height:3px;border-radius:2px;display:inline-block}
-.trace svg{display:block;width:100%;height:auto;margin-top:4px}
-.tgrid{stroke:var(--rule);stroke-width:1}
-.tset{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 4}
-.tline{fill:none;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
-.tlab{font-size:11px;fill:var(--muted);font-family:var(--font)}
-.side{display:flex;flex-direction:column;gap:14px}
-.ctrl{padding:16px}
-.seg{display:flex;background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:3px;gap:3px;margin-bottom:14px}
-.seg button{all:unset;cursor:pointer;flex:1;text-align:center;padding:7px 10px;border-radius:7px;font-weight:600;font-stretch:92%;font-size:14px}
-.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
-.sl{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline}
-.sl label{font-size:14px;font-stretch:94%;color:var(--muted)}
-.sl output{font-weight:800;font-size:22px;font-stretch:105%;font-variant-numeric:tabular-nums}
-.sl output small{font-size:13px;font-weight:600;color:var(--muted)}
-.track{grid-column:1/-1;position:relative;padding-top:6px}
-.track input{width:100%;accent-color:var(--accent);margin:0}
-.track .mk{position:absolute;top:-2px;width:2px;height:12px;background:#c8102e;transform:translateX(-1px)}
-.track .mk::after{content:attr(data-l);position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:11px;color:#c8102e;white-space:nowrap;font-weight:600}
-.sl.off{opacity:.4}
-.btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.btn{all:unset;cursor:pointer;padding:7px 14px;border-radius:8px;border:1px solid var(--rule);font-weight:600;font-stretch:92%;font-size:14px;background:var(--bg)}
-.btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.note{font-size:13px;color:var(--muted);margin:10px 0 0;font-stretch:94%}
-.gauges{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;padding:14px 16px}
-.gauge{text-align:center}
-.gauge svg{width:100%;max-width:160px;display:block;margin:0 auto}
-.gtrack{fill:none;stroke:var(--rule);stroke-width:9;stroke-linecap:round}
-.gfill{fill:none;stroke-width:9;stroke-linecap:round}
-.gneedle{stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
-.ghub{fill:var(--ink)}
-.gset{stroke:var(--ink);stroke-width:2}
-.gval{font-weight:800;font-size:24px;font-stretch:105%;font-variant-numeric:tabular-nums;line-height:1;margin-top:-4px}
-.gval small{font-size:12px;font-weight:600;color:var(--muted)}
-.glab{font-size:13px;color:var(--muted);font-stretch:92%;line-height:1.25;margin-top:3px}
-.explain{padding:16px}
-.explain h3,.symcard h3{margin:0 0 6px;font-size:13px;font-weight:700;color:var(--muted);font-stretch:95%}
-.explain p{margin:0;font-size:15.5px;line-height:1.55;min-height:6.2em}
-.steps{list-style:none;margin:12px 0 0;padding:12px 0 0;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:7px;font-size:14px;line-height:1.35}
-.steps li{display:flex;gap:10px;color:var(--muted);transition:color .3s}
-.steps li b{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-size:12px;transition:all .3s}
-.steps li.on{color:var(--ink)}
-.steps li.on b{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.symcard{padding:14px 16px}
-.sym{color:var(--ink);display:flex;justify-content:center}
-.sym svg{width:100%;max-width:280px;height:auto}
-.sym .dsh{stroke-dasharray:5 4}
-/* drawing */
-.bd{fill:url(#hatch);stroke:var(--edge);stroke-width:2}
-.h-bg{fill:var(--steel)} .h-ln{stroke:var(--hatch);stroke-width:1.1}
-.stl{stroke:var(--edge);stroke-width:1.2}
-.spB{fill:none;stroke:var(--spring-back);stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round}
-.spF{fill:none;stroke:var(--spring-front);stroke-width:4.6;stroke-linecap:round;stroke-linejoin:round}
-.spH{fill:none;stroke:rgba(255,255,255,.6);stroke-width:1.2;stroke-linecap:round}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5}
+.wrap{max-width:1360px;margin:0 auto;padding:24px 20px 60px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 28px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:18px}
+h1{font-family:var(--cond);font-weight:600;font-size:clamp(1.9rem,4.2vw,3rem);line-height:1;margin:0}
+header.top>div:first-child{flex:1 1 420px}
+.sub{margin:4px 0 0;color:var(--muted)}
+.topctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:flex;border:1px solid var(--steel-dark);border-radius:4px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink);font:500 .9rem var(--sans);padding:7px 12px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--steel-dark)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}}
+nav.types{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px;position:sticky;top:12px}
+nav.types h2{font-family:var(--cond);font-size:1.1rem;margin:2px 6px 8px;color:var(--muted);font-weight:600}
+nav.types ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+nav.types li.sep{border-top:1px solid var(--line);margin-top:6px;padding-top:6px}
+@media (max-width:900px){nav.types{position:static} nav.types ul{flex-direction:row;overflow-x:auto;padding-bottom:4px} nav.types li{flex:0 0 auto} nav.types li.sep{border-top:0;margin:0;padding:0;border-left:1px solid var(--line);padding-left:4px}}
+.typebtn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid transparent;background:transparent;color:var(--ink);font:500 .95rem var(--sans);padding:6px 8px;border-radius:4px;cursor:pointer}
+.typebtn:hover{background:var(--bg)}
+.typebtn[aria-current="page"]{background:var(--ink);color:var(--panel)}
+.typebtn svg{width:46px;height:24px;flex:0 0 auto}
+.typebtn svg *{stroke:currentColor;fill:none;stroke-width:5}
+.typebtn svg text{display:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.figtop{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.figtop h2{font-family:var(--cond);font-weight:600;font-size:1.7rem;margin:0}
+.state{font:600 1rem var(--cond);display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+.state i{width:10px;height:10px;border-radius:50%;background:var(--steel)}
+.state[data-k="open"] i{background:var(--drain)} .state[data-k="partial"] i{background:var(--pilot)} .state[data-k="reverse"] i{background:var(--lp)}
+.stage{overflow-x:auto}
+.stage svg{display:block;width:100%;height:auto;max-height:62vh;min-width:420px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 2px 0;font-size:.86rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:10px 2px 0}
+.btn{border:1px solid var(--steel-dark);background:var(--bg);color:var(--ink);font:500 .9rem var(--sans);padding:6px 11px;border-radius:4px;cursor:pointer}
+.btn:hover{background:var(--steel-light)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+.btn:disabled{opacity:.45;cursor:default}
+.toolbar label{font-size:.9rem;display:flex;align-items:center;gap:6px}
+.rng{position:relative;display:inline-flex}
+.rng input{width:200px}
+.rng .mk{position:absolute;top:-5px;width:2px;height:8px;background:var(--hp);transform:translateX(-1px);pointer-events:none}
+.toolbar output{font:600 1rem var(--cond);min-width:64px;font-variant-numeric:tabular-nums}
+.toolbar label.off{opacity:.45}
+input[type=range]{accent-color:var(--ink)}
+select{font:500 .9rem var(--sans);padding:5px;border-radius:4px;border:1px solid var(--steel-dark);background:var(--bg);color:var(--ink)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.status{margin:12px 2px 0;padding:10px 12px;border-left:5px solid var(--hp);background:var(--bg);min-height:3.2em}
+.readings{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:14px;margin-top:12px;align-items:stretch}
+@media (max-width:700px){.readings{grid-template-columns:minmax(0,1fr)}}
+.gauges{display:flex;gap:10px}
+.gauge{background:var(--bg);border-radius:4px;padding:6px 10px 8px;text-align:center;min-width:132px}
+.gauge svg{width:118px;display:block;margin:0 auto}
+.gtrack{fill:none;stroke:var(--line);stroke-width:8}
+.gfill{fill:none;stroke-width:8}
+.gneedle{stroke:var(--ink);stroke-width:2.4;stroke-linecap:round} .ghub{fill:var(--ink)} .gset{stroke:var(--ink);stroke-width:2}
+.gval{font:600 1.35rem var(--cond);line-height:1;font-variant-numeric:tabular-nums}
+.gval small{font-size:.85rem;color:var(--muted);font-weight:500}
+.glab{font-size:.8rem;color:var(--muted);line-height:1.2;margin-top:2px}
+.trace{background:var(--bg);border-radius:4px;padding:6px 10px}
+.trace .th{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.trace .th span{display:inline-flex;align-items:center;gap:5px;margin-left:10px}
+.trace .th i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.trace svg{display:block;width:100%;height:96px;margin-top:4px}
+.tgrid{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+.tset{stroke:var(--muted);stroke-width:1;stroke-dasharray:5 4;vector-effect:non-scaling-stroke}
+.tline{fill:none;stroke-width:2.2;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.below{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:1100px){.below{grid-template-columns:minmax(0,1fr)}}
+.card h3{font-family:var(--cond);font-weight:600;font-size:1.3rem;margin:0 0 6px}
+.card h4{margin:12px 0 4px;font-size:.95rem}
+.card p{margin:0 0 6px}
+.card ol{margin:0;padding-left:20px} .card ol li{margin:4px 0}
+.howsteps li{transition:color .3s}
+.howsteps.live li{color:var(--muted)}
+.howsteps.live li.on{color:var(--ink);font-weight:500}
+.howsteps li.hid{display:none}
+.symbol{display:flex;justify-content:center;background:var(--bg);border-radius:4px;padding:8px;margin-top:8px}
+.symbol svg{width:100%;max-width:260px;height:auto}
+.symbol svg .dsh{stroke-dasharray:5 4}
+.note{font-size:.88rem;color:var(--muted);margin-top:8px}
+.mt{margin-top:16px}
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:6px}
+.appx{background:var(--bg);border-radius:4px;padding:10px 12px;border-top:3px solid var(--ink)}
+.appx .m{font-size:.82rem;color:var(--muted);margin:0}
+.appx h4{margin:2px 0 4px;font-size:1.05rem;font-family:var(--cond);font-weight:600}
+.appx p{font-size:.93rem}
+.appx .typ{font-size:.85rem;color:var(--muted);margin:6px 0 0}
+.appx .typ b{color:var(--ink);font-weight:600}
+.disc{margin-top:12px;padding:10px 12px;border-left:5px solid var(--accent);background:var(--bg)}
+.disc b{font-family:var(--cond);font-weight:600;font-size:1.05rem;display:block}
+.calcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 14px;margin:6px 0 12px}
+.calcgrid label{display:flex;flex-direction:column;font-size:.88rem;color:var(--muted)}
+.calcgrid .in{display:flex;align-items:center;gap:6px}
+.calcgrid input{width:110px;font:600 1rem var(--cond);padding:3px 6px;border:1px solid var(--steel-dark);border-radius:3px;background:var(--bg);color:var(--ink);text-align:right}
+.calcgrid .u{color:var(--muted);font-size:.85rem}
+.tablewrap{overflow-x:auto}
+table.calc{border-collapse:collapse;width:100%;font-size:.92rem;min-width:620px}
+table.calc th,table.calc td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.calc th{color:var(--muted);font-weight:600}
+table.calc td.eq{font-family:var(--math);font-size:1.05rem;font-style:italic;white-space:nowrap}
+table.calc td.sub{font-family:var(--math);color:var(--muted)}
+table.calc td.res b{font-weight:600}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.qmeta{color:var(--muted);font-size:.88rem;margin:0}
+.qq{padding:12px 0;border-bottom:1px solid var(--line)}
+.qt{margin:0 0 8px;font-weight:500}
+.qt b{font-family:var(--cond);font-weight:600;margin-right:6px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+@media (max-width:640px){.opts{grid-template-columns:minmax(0,1fr)}}
+.opt{border:1px solid var(--steel-dark);background:var(--bg);color:var(--ink);font:400 .93rem var(--sans);padding:7px 10px;border-radius:4px;cursor:pointer;text-align:left}
+.opt:hover:not(:disabled){background:var(--steel-light)}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--drain);box-shadow:inset 4px 0 0 var(--drain)}
+.opt.no{border-color:var(--hp);box-shadow:inset 4px 0 0 var(--hp)}
+.qq.done .opt:not(.ok):not(.no){opacity:.5}
+.why{margin:8px 0 0;padding:8px 10px;border-left:5px solid var(--steel-dark);background:var(--bg);font-size:.92rem}
+.qfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.qres{margin:0}
+footer{margin-top:30px;font-size:.85rem;color:var(--muted)}
+.keys{font-size:.82rem;color:var(--muted)}
+kbd{font:600 .78rem var(--sans);border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:0 4px;background:var(--panel)}
+/* 2D section drawing, same conventions as the cylinder site */
+.hatch-bg{fill:var(--steel-light)} .hatch-line{stroke:var(--hatch);stroke-width:1.1}
+.bd{fill:url(#hatch);stroke:var(--steel-dark);stroke-width:1.2}
+.stl{stroke:var(--steel-dark);stroke-width:1.1}
+.spB{fill:none;stroke:var(--spring);stroke-opacity:.5;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.spF{fill:none;stroke:var(--spring);stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round}
+.spH{fill:none;stroke:#fff;stroke-opacity:.35;stroke-width:1;stroke-linecap:round}
 .fp{fill:none;stroke:none}
 .stream{fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0}
-.pt0{stroke:rgba(10,20,30,.38);stroke-width:4.6;stroke-linecap:round}
-.pt1{stroke:#fff;stroke-width:2.4;stroke-linecap:round}
-.lbl text{font-family:var(--font);font-size:12.5px;font-weight:600;font-stretch:88%;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:3.5px;stroke-linejoin:round}
-.lbl path{fill:none;stroke:var(--ink);stroke-width:1}
-.lbl circle{fill:var(--ink)}
-.ltxt{font-family:var(--font);font-size:12px;font-weight:700;fill:#fff;text-anchor:middle}
-@media (prefers-reduced-motion: reduce){.steps li,.steps li b,.pill i{transition:none}}
+.pt0{stroke:rgba(0,0,0,.22);stroke-width:4.2;stroke-linecap:round}
+.pt1{stroke:#fff;stroke-opacity:.9;stroke-width:2.4;stroke-linecap:round}
+.lbl text{font:600 13px var(--cond);fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+.lbl path{fill:none;stroke:var(--muted);stroke-width:1}
+.lbl circle{display:none}
+.nolabels .lbl{display:none}
+.ltxt{font:600 12px var(--cond);fill:#fff;text-anchor:middle}
+/* lecture mode */
+.presenter{display:none;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--ink);color:var(--panel);padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px));align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.presenter .pname{font:600 1.15rem var(--cond);margin:0 6px}
+.presenter .pg{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.presenter button{border:1px solid var(--steel);background:transparent;color:var(--panel);font:500 .9rem var(--sans);padding:5px 10px;border-radius:4px;cursor:pointer}
+body.lecture .presenter{display:flex}
+body.lecture header.top,body.lecture nav.types{display:none}
+body.lecture .layout{grid-template-columns:minmax(0,1fr)}
+body.lecture .wrap{max-width:1700px;padding-bottom:90px}
+body.lecture .stage svg{max-height:70vh}
+body.lecture .status{font-size:1.2rem}
+body.lecture .howsteps li{font-size:1.2rem}
+body.lecture .card p,body.lecture .appx p{font-size:1.08rem}
+body.lecture .qt{font-size:1.15rem}
+.nextpt{display:none;margin-top:8px}
+body.lecture .nextpt{display:inline-block}
+@media (prefers-reduced-motion: reduce){.howsteps li{transition:none}}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-  <pattern id="hatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)"><rect class="h-bg" width="7" height="7"/><line class="h-ln" x1="0" y1="0" x2="0" y2="7"/></pattern>
-  <linearGradient id="steelV" x1="0" x2="1"><stop offset="0" stop-color="#4c5560"/><stop offset=".28" stop-color="#b9c2cb"/><stop offset=".45" stop-color="#f3f6f9"/><stop offset=".7" stop-color="#9aa4ae"/><stop offset="1" stop-color="#46505a"/></linearGradient>
-  <linearGradient id="steelH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4c5560"/><stop offset=".28" stop-color="#b9c2cb"/><stop offset=".45" stop-color="#f3f6f9"/><stop offset=".7" stop-color="#9aa4ae"/><stop offset="1" stop-color="#46505a"/></linearGradient>
-  <linearGradient id="bronzeV" x1="0" x2="1"><stop offset="0" stop-color="#6b4512"/><stop offset=".3" stop-color="#c88f3a"/><stop offset=".48" stop-color="#f1cf8e"/><stop offset=".72" stop-color="#b07a2a"/><stop offset="1" stop-color="#5e3c0f"/></linearGradient>
-  <linearGradient id="bronzeH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b4512"/><stop offset=".3" stop-color="#c88f3a"/><stop offset=".48" stop-color="#f1cf8e"/><stop offset=".72" stop-color="#b07a2a"/><stop offset="1" stop-color="#5e3c0f"/></linearGradient>
-  <radialGradient id="ballG" cx=".35" cy=".32" r=".75"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#c9d0d7"/><stop offset="1" stop-color="#4a535d"/></radialGradient>
+  <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="hatch-bg" width="7" height="7"/><line class="hatch-line" x1="0" y1="0" x2="0" y2="7"/></pattern>
+  <linearGradient id="steelV" x1="0" x2="1"><stop offset="0" stop-color="#66717C"/><stop offset=".3" stop-color="#C9D0D6"/><stop offset=".5" stop-color="#F1F4F6"/><stop offset=".75" stop-color="#A5AEB7"/><stop offset="1" stop-color="#66717C"/></linearGradient>
+  <linearGradient id="steelH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#66717C"/><stop offset=".3" stop-color="#C9D0D6"/><stop offset=".5" stop-color="#F1F4F6"/><stop offset=".75" stop-color="#A5AEB7"/><stop offset="1" stop-color="#66717C"/></linearGradient>
+  <linearGradient id="bronzeV" x1="0" x2="1"><stop offset="0" stop-color="#525c66"/><stop offset=".3" stop-color="#aab3bc"/><stop offset=".5" stop-color="#e3e8ec"/><stop offset=".75" stop-color="#8d97a1"/><stop offset="1" stop-color="#4f5963"/></linearGradient>
+  <linearGradient id="bronzeH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#525c66"/><stop offset=".3" stop-color="#aab3bc"/><stop offset=".5" stop-color="#e3e8ec"/><stop offset=".75" stop-color="#8d97a1"/><stop offset="1" stop-color="#4f5963"/></linearGradient>
+  <radialGradient id="ballG" cx=".35" cy=".32" r=".75"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#C9D0D6"/><stop offset="1" stop-color="#66717C"/></radialGradient>
   <linearGradient id="knobG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3f45"/><stop offset=".4" stop-color="#1c1f22"/><stop offset="1" stop-color="#08090a"/></linearGradient>
 </defs></svg>
 <div class="wrap">
-  <header class="top">
-    <div>
-      <h1>Inside pressure control valves</h1>
-      <p>Live cutaways of seven valves. Move the pressure, and the springs, spools and fluid respond the way they do in a real circuit.</p>
-    </div>
-    <div class="key" aria-label="Fluid color code">
-      <span><i style="background:#c8102e"></i>Pump / system pressure</span>
-      <span><i style="background:#e8711a"></i>Pilot pressure</span>
-      <span><i style="background:#d4a017"></i>Reduced or metered</span>
-      <span><i style="background:#1f6fd1"></i>Return to tank</span>
-      <span><i style="background:#1f9a5a"></i>Drain</span>
-    </div>
-  </header>
-  <div class="app">
-    <nav class="rail" role="tablist" aria-label="Valves"></nav>
-    <div id="view"></div>
+<header class="top">
+  <div>
+    <h1>Pressure control valves</h1>
+    <p class="sub">Choose a valve, watch it work in cross-section, then see where it is used on farm machinery, size it and test yourself.</p>
   </div>
+  <div class="topctl">
+    <button class="btn" id="lectureBtn" aria-pressed="false">Lecture mode</button>
+    <div class="seg" role="group" aria-label="Units"><button data-units="si" aria-pressed="true">SI (metric)</button><button data-units="us" aria-pressed="false">US customary</button></div>
+  </div>
+</header>
+<div class="layout">
+  <nav class="types" aria-label="Valve types">
+    <h2>Valve types</h2>
+    <ul id="typeList"></ul>
+  </nav>
+  <main id="view"></main>
 </div>
+</div>
+<div class="presenter" role="toolbar" aria-label="Presenter controls"><div class="pg"><button data-p-act="prev">Previous</button><span class="pname"></span><button data-p-act="next">Next</button></div><div class="pg"><button data-p-act="pt">Next point</button><button data-p-act="fs">Full screen</button><button data-p-act="exit">Exit lecture</button></div></div>
 <script>
 (function(){
 "use strict";
@@ -174,14 +232,14 @@ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const ramp=(v,a,b)=>clamp((v-a)/(b-a));
 const ease=(c,t,dt,k=7)=>c+(t-c)*Math.min(1,dt*k);
-/* damped spring: underdamped for a slight, realistic overshoot */
 function phys(o,key,target,dt,k=150,c=17,lo=0,hi=1){const x=o[key]||0,v=o[key+'_v']||0;let a=k*(target-x)-c*v;let nv=v+a*dt,nx=x+nv*dt;if(nx<lo){nx=lo;nv=0;}if(nx>hi){nx=hi;nv=0;}o[key]=nx;o[key+'_v']=nv;return nx;}
-
-/* hydraulic color code */
-const ROLE={P:[200,16,46],pilot:[232,113,26],met:[212,160,23],T:[31,111,209],D:[31,154,90]};
-const PALE=[236,239,243];
-function roleColor(role,q){const d=ROLE[role]||ROLE.P;const t=0.16+0.84*Math.pow(clamp(q),0.7);return d.map((c,i)=>PALE[i]+(c-PALE[i])*t);}
-
+/* oil colours come from the CSS tokens, so light and dark mode both work */
+let ROLE={},PALE=[246,247,248];
+function hex(v){v=v.trim();if(v[0]==='#'){if(v.length===4)v='#'+v[1]+v[1]+v[2]+v[2]+v[3]+v[3];return [1,3,5].map(i=>parseInt(v.slice(i,i+2),16));}const m=v.match(/\d+/g);return m?m.slice(0,3).map(Number):[128,128,128];}
+function readColors(){const cs=getComputedStyle(document.documentElement);const g=n=>hex(cs.getPropertyValue(n));ROLE={P:g('--hp'),pilot:g('--pilot'),met:g('--met'),T:g('--lp'),D:g('--drain')};PALE=g('--panel');}
+readColors();window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{readColors();});
+function roleColor(role,q){const d=ROLE[role]||ROLE.P;const t=0.12+0.5*Math.pow(clamp(q),0.75);return d.map((c,i)=>PALE[i]+(c-PALE[i])*t);}
+function streamColor(role){const d=ROLE[role]||ROLE.P;return d.map((c,i)=>PALE[i]+(c-PALE[i])*0.82);}
 /* ---------- drawing helpers ---------- */
 function helix(cx,a1,a2,r,n,horiz){const steps=Math.max(8,Math.round(n*20));let back='',front='',pf=false,px=0,py=0;
   for(let i=0;i<=steps;i++){const t=i/steps,th=2*Math.PI*n*t;const along=a1+(a2-a1)*t,across=r*Math.sin(th),depth=Math.cos(th),pz=r*0.24*depth;
@@ -234,8 +292,8 @@ function seqSymbol(drain){return symWrap('0 0 280 190',`<line x1="10" y1="90" x2
 const V=[];
 V.push({key:'check',name:'Check valve',sub:'Free flow one way, blocked the other',scale:200,
   slider:{label:'Pressure at port A',min:0,max:200,value:60,mark:105,markL:'cracks'},
-  note:'Cracking pressure is 5 psi. The circuit holds port B at 100 psi.',
-  gauges:[{label:'Port A',max:200,set:105,col:'#c8102e'},{label:'Port B',max:200,col:'#1f6fd1'}],
+  note:()=>`Cracking pressure is ${UP(5)}. The circuit holds port B at ${UP(100)}.`,
+  gauges:[{label:'Port A',max:200,set:105,col:'var(--hp)'},{label:'Port B',max:200,col:'var(--lp)'}],
   svg(){return `<svg viewBox="0 0 560 330" role="img" aria-label="Check valve cutaway">
     ${zpipe('A','M10 210 H92',44)}${zpipe('B','M468 210 H550',44)}
     ${bd(90,128,380,164,14)}
@@ -258,15 +316,15 @@ V.push({key:'check',name:'Check valve',sub:'Free flow one way, blocked the other
     const px=232+lift*44;c.tr('poppet',px,210);c.spring('spring',[210,px+22,350,20,6,true]);
     c.z('A',A,'P');c.z('B',B,dp>0?'P':'P');c.f('fwd',lift);c.tr('sball',lift*10,0);
     let k,title,cap;
-    if(dp<=0){k='closed';title='Closed, reverse pressure';cap=`Port B (${B} psi) is higher than port A (${Math.round(A)} psi). That back pressure plus the light spring presses the poppet into its seat, so nothing can flow from B back to A.`;}
-    else if(tgt<=0){k='closed';title='Closed';cap=`Port A is ${Math.round(dp)} psi above port B, but the poppet stays seated until the difference reaches the 5 psi cracking pressure.`;}
-    else{k=tgt>0.95?'open':'partial';title=tgt>0.95?'Open, free flow':'Cracking open';cap=`A ${Math.round(dp)} psi difference overcomes the spring. The poppet lifts off the seat and fluid streams from A to B; a larger difference opens it wider.`;}
+    if(dp<=0){k='closed';title='Closed, reverse pressure';cap=`Port B (${UP(B)}) is higher than port A (${UP(A)}). That back pressure plus the light spring presses the poppet into its seat, so nothing can flow from B back to A.`;}
+    else if(tgt<=0){k='closed';title='Closed';cap=`Port A is ${UP(dp)} above port B, but the poppet stays seated until the difference reaches the ${UP(5)} cracking pressure.`;}
+    else{k=tgt>0.95?'open':'partial';title=tgt>0.95?'Open, free flow':'Cracking open';cap=`A ${UP(dp)} difference overcomes the spring. The poppet lifts off the seat and fluid streams from A to B; a larger difference opens it wider.`;}
     return {g:[A,B],k,title,cap};}});
 
 V.push({key:'relief',name:'Direct-acting relief valve',sub:'Caps maximum system pressure',scale:1100,
   slider:{label:'Pressure the load demands',min:0,max:1100,value:600,mark:1000,markL:'setting'},
-  note:'Cracks at 950 psi and passes full pump flow at the 1,000 psi setting.',
-  gauges:[{label:'Pump / system',max:1200,set:1000,col:'#c8102e'}],
+  note:()=>`Cracks at ${UP(950)} and passes full pump flow at the ${UP(1000)} setting.`,
+  gauges:[{label:'Pump / system',max:1200,set:1000,col:'var(--hp)'}],
   svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Direct-acting relief valve cutaway">
     ${zpipe('in','M18 398 H542',26)}${zpipe('tank','M370 232 H470',30)}
     ${bd(250,352,60,34,3)}${bd(190,66,180,294,12)}
@@ -290,16 +348,16 @@ V.push({key:'relief',name:'Direct-acting relief valve',sub:'Caps maximum system 
     c.z('in',Pd,'P');c.z('tank',12+260*lift,'T');
     c.f('pump',P>0?1:0);c.f('sys',1-lift);c.f('rel',lift,1,1.3);c.tr('sarrow',0,18*(1-lift));
     let k,title,cap;
-    if(tgt<=0){k='closed';title='Closed';cap=`System pressure (${Math.round(Pd)} psi) is below the 950 psi cracking pressure. The spring holds the poppet on its seat and every drop of pump flow goes to the system.`;}
+    if(tgt<=0){k='closed';title='Closed';cap=`System pressure (${UP(Pd)}) is below the ${UP(950)} cracking pressure. The spring holds the poppet on its seat and every drop of pump flow goes to the system.`;}
     else if(tgt<0.95){k='partial';title='Cracking open';cap='Pressure under the poppet now beats the spring. The poppet lifts a little and part of the pump flow escapes to the reservoir while the rest still reaches the system.';}
-    else{k='open';title='Fully open, relieving';cap=`The load asks for more than the valve allows, so the poppet is fully lifted and pump flow returns to the reservoir. Pressure stops near ${Math.round(Pd)} psi; the climb above cracking pressure is the pressure override.`;}
+    else{k='open';title='Fully open, relieving';cap=`The load asks for more than the valve allows, so the poppet is fully lifted and pump flow returns to the reservoir. Pressure stops near ${UP(Pd)}; the climb above cracking pressure is the pressure override.`;}
     return {g:[Pd],k,title,cap};}});
 
 V.push({key:'sequence',name:'Sequence valve',sub:'Runs a second actuator only after the first',scale:1000,
   slider:{label:'Primary circuit pressure',min:0,max:1000,value:300,mark:600,markL:'setting'},
   modes:[{id:'fwd',label:'Forward flow'},{id:'rev',label:'Return flow'}],sliderOff:m=>m==='rev',
-  note:'Opens to the secondary circuit at 600 psi. The spring chamber drains externally.',
-  gauges:[{label:'Primary (inlet)',max:1000,set:600,col:'#c8102e'},{label:'Secondary (outlet)',max:1000,col:'#e8711a'}],
+  note:()=>`Opens to the secondary circuit at ${UP(600)}. The spring chamber drains externally.`,
+  gauges:[{label:'Primary (inlet)',max:1000,set:600,col:'var(--hp)'},{label:'Secondary (outlet)',max:1000,col:'var(--pilot)'}],
   svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Sequence valve cutaway">
     ${zpipe('in','M14 255 H152',26)}${zpipe('in','M60 255 V136',18)}${zpipe('drain','M152 102 H130 V18',10)}${zpipe('out','M408 195 H546',26)}
     ${spoolBody({drain:'ext',pilot:'in',check:true})}
@@ -325,15 +383,15 @@ V.push({key:'sequence',name:'Sequence valve',sub:'Runs a second actuator only af
     c.tr('sarrow',0,18*(1-lift));c.tr('sball',-8*chk,0);
     let k,title,cap;
     if(!fwd){k='reverse';title='Return flow through bypass';cap='Fluid returning from the secondary actuator pushes the bypass check ball off its seat and flows straight back to the inlet, skipping the spool, which stays closed.';}
-    else if(tgt<=0){k='closed';title='Closed';cap=`Inlet pressure (${Math.round(Pin)} psi) reaches the bottom of the spool through the internal pilot line but is below the 600 psi spring setting. The primary actuator moves first; nothing reaches the outlet.`;}
-    else{k=tgt>0.95?'open':'partial';title=tgt>0.95?'Open to secondary':'Opening';cap='The primary actuator has stalled, so inlet pressure climbs to 600 psi and lifts the balanced spool. Flow now passes to the secondary actuator while the primary circuit keeps its pressure.';}
+    else if(tgt<=0){k='closed';title='Closed';cap=`Inlet pressure (${UP(Pin)}) reaches the bottom of the spool through the internal pilot line but is below the ${UP(600)} spring setting. The primary actuator moves first; nothing reaches the outlet.`;}
+    else{k=tgt>0.95?'open':'partial';title=tgt>0.95?'Open to secondary':'Opening';cap=`The primary actuator has stalled, so inlet pressure climbs to ${UP(600)} and lifts the balanced spool. Flow now passes to the secondary actuator while the primary circuit keeps its pressure.`;}
     return {g:[Pin,Pout],k,title,cap};}});
 
 V.push({key:'counterbalance',name:'Counterbalance valve',sub:'Holds a load and lowers it smoothly',scale:1000,
   slider:{label:'Pump pressure pushing the load down',min:0,max:150,value:0,mark:33,markL:'opens'},
   modes:[{id:'lower',label:'Lower load'},{id:'raise',label:'Raise load'}],sliderOff:m=>m==='raise',
-  note:'Set at 650 psi. The load alone creates 600 psi under the piston.',
-  gauges:[{label:'Cylinder (inlet)',max:1000,set:650,col:'#c8102e'},{label:'Outlet to DCV',max:1000,col:'#d4a017'}],
+  note:()=>`Set at ${UP(650)}. The load alone creates ${UP(600)} under the piston.`,
+  gauges:[{label:'Cylinder (inlet)',max:1000,set:650,col:'var(--hp)'},{label:'Outlet to DCV',max:1000,col:'var(--met)'}],
   svg(){return `<svg viewBox="0 0 700 440" role="img" aria-label="Counterbalance valve cutaway with cylinder">
     ${zpipe('in','M118 380 H205 V255 H302',14)}${zpipe('rod','M118 214 H170 V12',14)}${zpipe('out','M558 195 H690',26)}
     <rect x="40" y="200" width="80" height="192" rx="6" fill="url(#steelV)" class="stl"/>
@@ -365,17 +423,17 @@ V.push({key:'counterbalance',name:'Counterbalance valve',sub:'Holds a load and l
     c.f('fwd',lower?moving:0,1,1,'met');c.f('rev',lower?0:moving,1,1,'P');c.f('cap',moving,d,1,'P');c.f('rodf',lower?(st.P>5?moving:0):moving,d,1,lower?'P':'T');c.f('outp',moving,d,1,lower?'met':'P');
     c.tr('sarrow',0,18*(1-lift));c.tr('sball',-8*chk,0);
     let k,title,cap;
-    if(lower&&tgt<=0){k='closed';title='Closed, load held';cap=`The load presses ${Math.round(Pin)} psi into the cylinder. That is below the 650 psi setting, so the spool stays shut and the load cannot drift or run away.`;}
+    if(lower&&tgt<=0){k='closed';title='Closed, load held';cap=`The load presses ${UP(Pin)} into the cylinder. That is below the ${UP(650)} setting, so the spool stays shut and the load cannot drift or run away.`;}
     else if(lower&&py>=368){k='closed';title='Load fully lowered';cap='The piston has reached the bottom of its stroke. Switch to Raise load to lift it back up.';}
-    else if(lower){k='partial';title='Metering, load lowering';cap=`Pump pressure on the rod side adds to the load and lifts inlet pressure to ${Math.round(Pin)} psi. The spool cracks open just enough to meter fluid out, so the load comes down under control instead of falling.`;}
+    else if(lower){k='partial';title='Metering, load lowering';cap=`Pump pressure on the rod side adds to the load and lifts inlet pressure to ${UP(Pin)}. The spool cracks open just enough to meter fluid out, so the load comes down under control instead of falling.`;}
     else if(py>250){k='reverse';title='Raising through bypass';cap='Pump flow enters the outlet port, lifts the bypass check ball and pours freely into the cylinder to raise the load. The spool stays closed the whole time.';}
     else{k='closed';title='Load fully raised';cap='The piston is at the top. The check ball reseats and the closed spool locks the load in place.';}
     return {g:[Pin,Pout],k,title,cap};}});
 
 V.push({key:'reducing',name:'Pressure-reducing valve',sub:'Gives one branch a lower, steady pressure',scale:1000,
   slider:{label:'Inlet pressure',min:0,max:1000,value:400,mark:600,markL:'setting'},
-  note:'Normally open. Holds the outlet at 600 psi. The spring chamber drains externally.',
-  gauges:[{label:'Inlet (P)',max:1000,col:'#c8102e'},{label:'Outlet (A)',max:1000,set:600,col:'#d4a017'}],
+  note:()=>`Normally open. Holds the outlet at ${UP(600)}. The spring chamber drains externally.`,
+  gauges:[{label:'Inlet (P)',max:1000,col:'var(--hp)'},{label:'Outlet (A)',max:1000,set:600,col:'var(--met)'}],
   svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Pressure-reducing valve cutaway">
     ${zpipe('in','M14 277 H152',30)}${zpipe('out','M408 217 H546',30)}${zpipe('drain','M152 102 H110 V18',10)}
     ${bd(150,60,260,340,10)}
@@ -402,14 +460,14 @@ V.push({key:'reducing',name:'Pressure-reducing valve',sub:'Gives one branch a lo
     const open=clamp((300-s-260)/35);
     c.f('thruA',Pin>15?1:0,1,1,'P');c.f('thruB',Pin>15?1:0,1,reg?1.35:1,reg?'met':'P');c.tr('sarrow',0,-14*ramp(s,6,33));
     let k,title,cap;
-    if(!reg){k='open';title='Wide open, unregulated';cap=`Inlet pressure (${Math.round(Pin)} psi) is below the 600 psi setting. The spring holds the spool down, the valve is fully open and the outlet sees the same pressure as the inlet.`;}
-    else{k='partial';title='Regulating';cap=`Outlet pressure, fed under the spool by the sensing line, pushes the spool up against the spring. The throttling edge leaves about ${Math.round(open*100)}% of the inlet open, dropping ${Math.round(Pin)} psi down to a steady 600 psi at the outlet.`;}
+    if(!reg){k='open';title='Wide open, unregulated';cap=`Inlet pressure (${UP(Pin)}) is below the ${UP(600)} setting. The spring holds the spool down, the valve is fully open and the outlet sees the same pressure as the inlet.`;}
+    else{k='partial';title='Regulating';cap=`Outlet pressure, fed under the spool by the sensing line, pushes the spool up against the spring. The throttling edge leaves about ${Math.round(open*100)}% of the inlet open, dropping ${UP(Pin)} down to a steady ${UP(600)} at the outlet.`;}
     return {g:[Pin,Pout],k,title,cap};}});
 
 V.push({key:'unloading',name:'Unloading valve',sub:'Idles the pump once the system is charged',scale:1000,
   slider:{label:'Remote pilot (system) pressure',min:0,max:1000,value:400,mark:800,markL:'setting'},
-  note:'Unloads the pump when the remote pilot line reaches 800 psi. A check valve keeps the system charged.',
-  gauges:[{label:'Pump outlet',max:1000,col:'#c8102e'},{label:'Remote pilot',max:1000,set:800,col:'#e8711a'}],
+  note:()=>`Unloads the pump when the remote pilot line reaches ${UP(800)}. A check valve keeps the system charged.`,
+  gauges:[{label:'Pump outlet',max:1000,col:'var(--hp)'},{label:'Remote pilot',max:1000,set:800,col:'var(--pilot)'}],
   svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Unloading valve cutaway">
     ${zpipe('in','M14 255 H152',26)}${zpipe('in','M80 255 V140',18)}${zpipe('sys','M80 120 V14',18)}${zpipe('pilot','M14 359 H152',12)}${zpipe('out','M408 195 H546',26)}
     <rect x="66" y="118" width="28" height="24" rx="3" fill="url(#steelV)" class="stl"/><path d="M73 136 L80 124 L87 136Z" fill="var(--edge)"/>
@@ -431,15 +489,15 @@ V.push({key:'unloading',name:'Unloading valve',sub:'Idles the pump once the syst
     c.f('pump',1);c.f('sys',1-lift);c.f('fwd',lift,1,1.3);c.f('outp',lift,1,1.3);
     c.tr('sarrow',0,18*(1-lift));
     let k,title,cap;
-    if(ut<0.5){k='closed';title='Closed, pump loaded';cap=`Remote pilot pressure (${Math.round(Pp)} psi) is below the 800 psi setting. The spool stays down and the pump drives all of its flow through the check valve to charge the system.`;}
-    else{k='open';title='Open, pump unloaded';cap=`System pressure in the remote pilot line has lifted the spool. Pump flow now dumps to the reservoir at only about ${Math.round(Pin)} psi, saving power and heat while the check valve keeps the system charged.`;}
+    if(ut<0.5){k='closed';title='Closed, pump loaded';cap=`Remote pilot pressure (${UP(Pp)}) is below the ${UP(800)} setting. The spool stays down and the pump drives all of its flow through the check valve to charge the system.`;}
+    else{k='open';title='Open, pump unloaded';cap=`System pressure in the remote pilot line has lifted the spool. Pump flow now dumps to the reservoir at only about ${UP(Pin)}, saving power and heat while the check valve keeps the system charged.`;}
     return {g:[Pin,Pp],k,title,cap};}});
 
 const PSTEPS=['Fluid from the pump enters the inlet port.','It passes through the orifice and fills the chamber above the main spool and the pilot chamber.','Equal pressure above the spool plus the biasing spring keep the spool closed.','At the setting, pilot pressure pushes the dart off its seat.','Pilot fluid drains to the reservoir past the open dart.','The orifice can\u2019t keep up, pressure above the spool drops and the spool lifts.','Excess pump flow passes the main spool to the reservoir, holding pressure near the setting.'];
 V.push({key:'pilot-relief',name:'Pilot-operated relief valve',sub:'Big flow, tight pressure control',scale:1100,
   slider:{label:'Pressure the load demands',min:0,max:1100,value:700,mark:1000,markL:'setting'},
-  note:'The pilot dart is set at 1,000 psi. A light biasing spring holds the main spool.',
-  gauges:[{label:'Pump / inlet',max:1200,set:1000,col:'#c8102e'},{label:'Above main spool',max:1200,col:'#e8711a'}],
+  note:()=>`The pilot dart is set at ${UP(1000)}. A light biasing spring holds the main spool.`,
+  gauges:[{label:'Pump / inlet',max:1200,set:1000,col:'var(--hp)'},{label:'Above main spool',max:1200,col:'var(--pilot)'}],
   steps:PSTEPS,
   svg(){return `<svg viewBox="0 0 560 440" role="img" aria-label="Pilot-operated relief valve cutaway">
     ${zpipe('in','M14 255 H152',40)}${zpipe('tank','M280 398 V436',36)}
@@ -471,45 +529,313 @@ V.push({key:'pilot-relief',name:'Pilot-operated relief valve',sub:'Big flow, tig
     c.f('pump',P>0?1:0);c.f('pil',d,1,0.8,'pilot');c.f('main',m,1,1.4);
     c.tr('sarrow',0,16*(1-m));c.tr('sarrow2',0,9*(1-d));
     let k,title,cap,on;
-    if(dT<=0&&d<0.05){k='closed';title='Closed';on=[1,2,3];cap=`Pump pressure is ${Math.round(Pd)} psi. Through the orifice the same pressure sits above the main spool, so the spool is balanced and the light biasing spring keeps it shut.`;}
-    else if(m<0.3){k='partial';title='Pilot dart opening';on=[4,5];cap='Pilot chamber pressure has reached 1,000 psi. The dart unseats and a small pilot flow drains away, so the pressure above the main spool starts to fall.';}
-    else{k='open';title='Main spool open, relieving';on=[6,7];cap=`Pressure above the spool (${Math.round(Pch)} psi) is now well below inlet pressure (${Math.round(Pd)} psi). The spool lifts and full pump flow dumps to the reservoir with very little pressure override.`;}
+    if(dT<=0&&d<0.05){k='closed';title='Closed';on=[1,2,3];cap=`Pump pressure is ${UP(Pd)}. Through the orifice the same pressure sits above the main spool, so the spool is balanced and the light biasing spring keeps it shut.`;}
+    else if(m<0.3){k='partial';title='Pilot dart opening';on=[4,5];cap=`Pilot chamber pressure has reached ${UP(1000)}. The dart unseats and a small pilot flow drains away, so the pressure above the main spool starts to fall.`;}
+    else{k='open';title='Main spool open, relieving';on=[6,7];cap=`Pressure above the spool (${UP(Pch)}) is now well below inlet pressure (${UP(Pd)}). The spool lifts and full pump flow dumps to the reservoir with very little pressure override.`;}
     return {g:[Pd,Pch],k,title,cap,on};}});
 
-/* ---------- UI ---------- */
-const rail=document.querySelector('.rail'),view=document.getElementById('view');
-V.forEach(v=>{const b=document.createElement('button');b.setAttribute('role','tab');b.dataset.key=v.key;b.innerHTML=`<b>${v.name}</b><span>${v.sub}</span>`;b.addEventListener('click',()=>{if(location.hash.slice(1)!==v.key)location.hash=v.key;else select(v.key);});rail.appendChild(b);});
+/* ---------- units (same approach as the hydraulic-cylinders site) ---------- */
+let units='si';
+const CONS={si:{len:['m',1],area:['m²',1],p:['Pa',1],F:['N',1],Q:['m³/s',1],k:['N/m',1],pow:['W',1],n:['',1]},
+  us:{len:['in',1/0.0254],area:['in²',1/0.00064516],p:['psi',1/6894.757],F:['lbf',1/4.448222],Q:['in³/s',1/1.6387064e-5],k:['lbf/in',0.0254/4.448222],pow:['in·lbf/s',1/0.112984829],n:['',1]}};
+const EVERY={si:{len:['mm',1000,1],area:['cm²',1e4,2],p:['bar',1e-5,1],F:['kN',1e-3,2],Q:['L/min',60000,1],k:['N/mm',1e-3,1],pow:['kW',1e-3,2],n:['',1,2]},
+  us:{len:['in',1/0.0254,3],area:['in²',1/0.00064516,3],p:['psi',1/6894.757,0],F:['lbf',1/4.448222,0],Q:['gpm',15850.32,1],k:['lbf/in',0.0254/4.448222,0],pow:['hp',1/745.7,2],n:['',1,2]}};
+const fmt=(x,d=0)=>(isFinite(x)?x:0).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const SUP={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+const sg=x=>{if(!isFinite(x)||x===0)return '0';const a=Math.abs(x);if(a>=1e-3&&a<1e6){const d=a>=10000?0:a>=1000?1:a>=100?1:a>=10?2:a>=1?3:Math.max(4,3-Math.floor(Math.log10(a)));return fmt(x,d);}const e=Math.floor(Math.log10(a));return `${(x/10**e).toFixed(3)} × 10${String(e).split('').map(c=>SUP[c]).join('')}`;};
+const H={n:(x,k)=>{const t=sg(x*CONS[units][k][1]);return t.includes('×')?`(${t})`:t;},
+  e:(x,k)=>{const E=EVERY[units][k];return `${fmt(x*E[1],E[2])} ${E[0]}`.trim();},
+  r:(x,k)=>`${sg(x*CONS[units][k][1])} ${CONS[units][k][0]} = <b>${H.e(x,k)}</b>`};
+/* pressure in psi (the animations run in psi internally) shown in the chosen units */
+const UPn=psi=>units==='si'?psi/14.50377:psi;
+const UPu=()=>units==='si'?'bar':'psi';
+const UP=psi=>{const v=UPn(psi);return `${fmt(v,units==='si'&&Math.abs(v)<100?1:0)} ${UPu()}`;};
+const area=d=>Math.PI*d*d/4;
+
+/* ---------- teaching content ---------- */
+const C={
+check:{
+  summary:'A check valve lets oil flow one way and blocks it the other way. A light spring holds a poppet or ball on its seat until the pressure difference across it lifts it off.',
+  points:['Flow from A to B lifts the poppet once the pressure difference beats the spring: the cracking pressure.','Flow from B to A pushes the poppet harder onto its seat, so the valve seals tighter as back pressure rises.','Pilot-operated checks (lock valves) can be opened on command, letting a held cylinder move.'],
+  uses:'Lock valves on sprayer and cultivator wing-fold cylinders, anti-drip nozzle checks on boom sprayers, and load checks in tractor control valves.',
+  watch:'Dirt on the seat lets oil leak back, so a held load slowly drifts. A spring that is too stiff wastes pressure on every pass.',
+  apps:[
+    {m:'Sprayers and folding tillage tools',t:'Lock valves on wing-fold cylinders',d:'Pilot-operated checks on the fold cylinders trap oil, so folded wings stay put during road transport even if the tractor valve leaks or a coupler is disconnected.',n:'Cracking about 2–3.5 bar (30–50 psi); pilot ratio about 3:1 to 4:1'},
+    {m:'Boom sprayers',t:'Anti-drip diaphragm checks',d:'A spring-loaded diaphragm in each nozzle body closes when boom pressure falls, so nozzles stop dripping the moment a section shuts off. That saves chemical and prevents over-application on headlands.',n:'Opening about 0.35–0.7 bar (5–10 psi)'},
+    {m:'Tractor remote valves and loaders',t:'Load checks in valve sections',d:'A small check in each spool section stops a raised load from dropping for an instant when the lever is first moved, before pump pressure builds above load pressure.',n:'A few psi cracking pressure'}],
+  disc:'A folded sprayer boom slowly drifts open during road transport. Which valve would you suspect first, and how would you test it in the field?',
+  calc:{inputs:[['k','Spring rate k','k',3500],['x','Preload compression x₀','len',0.004],['d','Seat diameter d','len',0.012],['pb','Outlet pressure p_B','p',7e5]],
+    compute(v,H){const A=area(v.d),F=v.k*v.x,dp=F/A;return [
+      {label:'Seat area',eq:'A = π·d² / 4',sub:`π × ${H.n(v.d,'len')}² / 4`,res:H.r(A,'area')},
+      {label:'Spring preload force',eq:'F<sub>s</sub> = k·x<sub>0</sub>',sub:`${H.n(v.k,'k')} × ${H.n(v.x,'len')}`,res:H.r(F,'F')},
+      {label:'Cracking pressure',eq:'Δp = F<sub>s</sub> / A',sub:`${H.n(F,'F')} / ${H.n(A,'area')}`,res:H.r(dp,'p')},
+      {label:'Inlet pressure to open',eq:'p<sub>A</sub> = p<sub>B</sub> + Δp',sub:`${H.n(v.pb,'p')} + ${H.n(dp,'p')}`,res:H.r(v.pb+dp,'p')}];}},
+  quiz:[
+    {q:'What is the cracking pressure of a check valve?',o:['The pressure difference needed to lift the poppet off its seat','The maximum pressure the valve body can hold','The pressure at which it leaks in reverse','The pump pressure at full flow'],a:0,why:'The poppet opens when the inlet-minus-outlet pressure, acting on the seat area, beats the spring force.'},
+    {q:'A check valve spring pushes with 18 N (4 lbf) on a 1.3 cm² (0.2 in²) seat. What is the cracking pressure?',o:['About 1.4 bar (20 psi)','About 0.05 bar (0.8 psi)','About 5.5 bar (80 psi)','About 0.35 bar (5 psi)'],a:0,why:'Δp = F ÷ A = 4 lbf ÷ 0.2 in² = 20 psi ≈ 1.4 bar.'},
+    {q:'Why are pilot-operated checks fitted to sprayer wing-fold cylinders?',o:['To lock oil in the cylinder so the wings cannot drift','To fold the wings faster','To lower system pressure','To cool the oil'],a:0,why:'They hold the cylinder locked until pilot pressure from the other line opens them.'},
+    {q:'What happens when pressure rises on the outlet side of a closed check valve?',o:['The poppet is pressed harder onto its seat','The poppet opens backwards','The cracking pressure drops to zero','The spring stretches'],a:0,why:'Back pressure acts in the closing direction, so the seal gets tighter.'},
+    {q:'What do diaphragm check valves in sprayer nozzle bodies do?',o:['Stop nozzles dripping after a section shuts off','Raise spray pressure','Mix chemical with water','Measure flow'],a:0,why:'Below their opening pressure they close, preventing drips and over-application.'}]},
+relief:{
+  summary:'A direct-acting relief valve caps the highest pressure in a circuit. A spring holds a poppet on its seat; when inlet pressure times seat area beats the spring force, the poppet lifts and sends oil to tank.',
+  points:['The valve is normally closed and senses its own inlet pressure.','Spring tension sets the cracking pressure; turning the screw in raises it.','Passing more flow needs more lift, so pressure rises above cracking: the pressure override.','All the flow it passes turns pump power straight into heat.'],
+  uses:'Main relief on tractor hydraulics, bypass on PTO sprayer pumps, and port reliefs on auger and post-hole digger motors.',
+  watch:'Holding a loader or hitch against its stops dumps full flow over the relief and overheats the oil. Never raise the setting to cure a slow implement.',
+  apps:[
+    {m:'Tractors',t:'Main system relief',d:'Protects the pump, hoses and cylinders of the tractor hydraulic system when a cylinder bottoms out or an implement jams.',n:'Open-center tractors often about 140–175 bar (2,000–2,500 psi); check the service manual'},
+    {m:'PTO-driven sprayer pumps',t:'Boom bypass and relief',d:'Roller and piston pumps are positive displacement. When boom valves close, a spring-loaded relief or regulating valve returns the flow to the tank so the pump and plumbing are not over-pressured.',n:'Boom spraying often 2–4 bar (30–60 psi)'},
+    {m:'Augers and post-hole diggers',t:'Motor port relief',d:'A relief across the hydraulic motor ports limits torque when the auger hits a rock or root, protecting the gearbox and motor.',n:'Set below the motor’s rated pressure'}],
+  disc:'An older tractor’s hydraulic oil runs hot whenever the loader is held against its stops. Use the heat formula to explain why, and say what the operator should change.',
+  calc:{inputs:[['k','Spring rate k','k',160000],['x','Preload compression x₀','len',0.0075],['n','Extra turns of the screw','n',0],['pt','Screw pitch (per turn)','len',0.001],['d','Seat diameter d','len',0.0095],['h','Poppet lift at full flow h','len',0.001],['q','Pump flow Q','Q',7.5e-4]],
+    compute(v,H){const A=area(v.d),x=v.x+v.n*v.pt,pc=v.k*x/A,pf=v.k*(x+v.h)/A,P=pf*v.q;return [
+      {label:'Seat area',eq:'A = π·d² / 4',sub:`π × ${H.n(v.d,'len')}² / 4`,res:H.r(A,'area')},
+      {label:'Spring compression',eq:'x = x<sub>0</sub> + n·pitch',sub:`${H.n(v.x,'len')} + ${fmt(v.n,2)} × ${H.n(v.pt,'len')}`,res:H.r(x,'len')},
+      {label:'Cracking pressure',eq:'p<sub>c</sub> = k·x / A',sub:`${H.n(v.k,'k')} × ${H.n(x,'len')} / ${H.n(A,'area')}`,res:H.r(pc,'p')},
+      {label:'Full-flow pressure',eq:'p<sub>f</sub> = k·(x + h) / A',sub:`${H.n(v.k,'k')} × (${H.n(x,'len')} + ${H.n(v.h,'len')}) / ${H.n(A,'area')}`,res:H.r(pf,'p')},
+      {label:'Pressure override',eq:'Δp = p<sub>f</sub> − p<sub>c</sub>',sub:`${H.n(pf,'p')} − ${H.n(pc,'p')}`,res:`${H.r(pf-pc,'p')} (${fmt((pf-pc)/pc*100,1)}%)`},
+      {label:'Heat when relieving',eq:'P = p<sub>f</sub>·Q',sub:`${H.n(pf,'p')} × ${H.n(v.q,'Q')}`,res:H.r(P,'pow')}];}},
+  quiz:[
+    {q:'What is the main job of a relief valve?',o:['Limit the maximum pressure in the system','Reduce pressure to one branch','Set the order of actuators','Hold a load in place'],a:0,why:'It opens to tank when inlet pressure reaches its setting.'},
+    {q:'What is pressure override?',o:['Full-flow pressure minus cracking pressure','Relief setting minus pump pressure','Inlet minus tank pressure','The pressure needed to move a spool'],a:0,why:'Passing more flow needs more lift and more spring compression, so pressure climbs above the cracking point.'},
+    {q:'Turning the adjustment screw in (compressing the spring) will…',o:['Raise the relief setting','Lower the relief setting','Raise pump flow','Have no effect'],a:0,why:'More spring force needs more pressure to lift the poppet.'},
+    {q:'A 45 L/min (12 gpm) pump relieves at 172 bar (2,500 psi). About how much power becomes heat?',o:['About 13 kW (17.5 hp)','About 6.5 kW (8.7 hp)','About 26 kW (35 hp)','About 1.9 kW (2.5 hp)'],a:0,why:'P = p·Q: 2,500 × 12 ÷ 1,714 ≈ 17.5 hp ≈ 13 kW.'},
+    {q:'Compared with pilot-operated reliefs, direct-acting reliefs are known for…',o:['Fast response but a larger pressure override','Very low override at high flow','Needing a remote pilot line','Being normally open'],a:0,why:'One spring does all the work, so they react fast but pressure rises with flow.'}]},
+sequence:{
+  summary:'A sequence valve makes one actuator finish before the next one starts. It stays closed until pressure in the primary circuit reaches its setting, then opens a path to the secondary circuit.',
+  points:['The primary actuator moves at low pressure while the valve stays closed.','When the primary stops, pressure rises to the setting and lifts the spool.','Oil flows to the secondary actuator while the primary stays pressurized.','On the way back, oil returns through the bypass check, not the spool.'],
+  uses:'Lift-then-fold on folding planters and cultivators, clamp-then-lift on bale handlers, grip-then-cut on grapple saws.',
+  watch:'The outlet is pressurized, so the spring chamber needs an external drain. A setting too close to the working pressure lets the second actuator start early.',
+  apps:[
+    {m:'Folding planters and cultivators',t:'Lift, then fold',d:'The toolbar lift cylinders run first. Only when they reach the end of stroke does the sequence valve open to the wing-fold cylinders, so wings never fold while the openers are in the ground.',n:'Setting about 7–14 bar (100–200 psi) above lift pressure'},
+    {m:'Bale handlers and squeezes',t:'Clamp, then lift',d:'The squeeze arms grip the bale first. Once clamping pressure is reached, the sequence valve lets the lift circuit start, so the bale is not dropped.',n:'The setting fixes the minimum clamp force'},
+    {m:'Woodlot grapple saws',t:'Grip the log before cutting',d:'The grapple closes and builds pressure before the saw bar feeds, keeping the log from rolling during the cut.',n:'Set below the circuit relief'}],
+  disc:'On a folding planter the wings start folding before the toolbar has fully lifted. Name two possible causes involving the sequence valve.',
+  calc:{inputs:[['D','Primary bore D','len',0.08],['F','Load on primary','F',30000],['m','Safety margin','p',1.4e6],['r','Relief setting','p',1.7e7]],
+    compute(v,H){const A=area(v.D),pw=v.F/A,ps=pw+v.m,ok=ps<=v.r-v.m;return [
+      {label:'Primary bore area',eq:'A = π·D² / 4',sub:`π × ${H.n(v.D,'len')}² / 4`,res:H.r(A,'area')},
+      {label:'Pressure to move the primary',eq:'p<sub>w</sub> = F / A',sub:`${H.n(v.F,'F')} / ${H.n(A,'area')}`,res:H.r(pw,'p')},
+      {label:'Sequence setting',eq:'p<sub>s</sub> = p<sub>w</sub> + margin',sub:`${H.n(pw,'p')} + ${H.n(v.m,'p')}`,res:H.r(ps,'p')},
+      {label:'Holding force on the primary',eq:'F<sub>h</sub> = p<sub>s</sub>·A',sub:`${H.n(ps,'p')} × ${H.n(A,'area')}`,res:H.r(ps*A,'F')},
+      {label:'Check against relief',eq:'p<sub>s</sub> ≤ p<sub>relief</sub> − margin',sub:`${H.n(ps,'p')} ≤ ${H.n(v.r-v.m,'p')}`,res:ok?'<b>OK</b>':'<b>Too close</b>: raise the relief or lighten the load'}];}},
+  quiz:[
+    {q:'What does a sequence valve control?',o:['The order in which actuators operate','The maximum system pressure','Cylinder speed','Flow direction to tank'],a:0,why:'It opens to the secondary circuit only once the primary reaches the set pressure.'},
+    {q:'Why does a sequence valve need an external drain?',o:['Its outlet is pressurized, so the spring chamber cannot drain there','To cool the spring','To raise its setting','Because it is normally open'],a:0,why:'Draining into the pressurized outlet would add outlet pressure to the spring and shift the setting.'},
+    {q:'On a folding planter, a sequence valve usually makes sure that…',o:['The toolbar is raised before the wings fold','Seed depth stays constant','Seed rate stays constant','The wings fold faster'],a:0,why:'Folding with openers in the ground would damage the row units.'},
+    {q:'How does return flow get back past a sequence valve?',o:['Through the internal bypass check','Through the external drain','Through the spool after it opens','It cannot return'],a:0,why:'The bypass check opens in reverse so the spool can stay closed.'},
+    {q:'Where should the sequence setting sit?',o:['Above the primary’s working pressure and below the relief setting','Above the relief setting','Below the working pressure','At tank pressure'],a:0,why:'Too low and it switches early; above the relief it would never open.'}]},
+counterbalance:{
+  summary:'A counterbalance valve holds a raised load and only lets it come down under control. It is set above the pressure the load creates, so the load alone cannot open it.',
+  points:['Load pressure stays below the setting, so the spool stays closed and the load is held.','To lower, the pump adds pressure on the rod side; the spool cracks open and meters oil out.','To raise, oil flows freely in through the bypass check.','Mounted on the cylinder, it also holds the load if a hose bursts.'],
+  uses:'Boom lift and telescope on farm telehandlers, timber and loader cranes, and winch motors with overrunning loads.',
+  watch:'Too low a setting lets the load creep or run away. Too high a setting wastes pump pressure and heats the oil every time the load is lowered.',
+  apps:[
+    {m:'Farm telehandlers',t:'Boom lift and telescope',d:'Counterbalance valves on the lift and telescope cylinders hold the boom when the joystick is released and give smooth lowering with a heavy bale or pallet. If a hose bursts, the load stays up.',n:'Setting about 1.3 × the highest load pressure'},
+    {m:'Timber and loader cranes',t:'Crane boom and jib',d:'Each crane function lowers against an overrunning load. The valve meters oil out so the boom cannot run away when swinging logs off a trailer.',n:'Pilot ratios commonly about 3:1 to 8:1'},
+    {m:'Hydraulic winches',t:'Motor counterbalance',d:'On winches and other motor drives with overrunning loads, the valve stops the load from driving the motor faster than the pump supplies oil.',n:'Set above the highest holding pressure'}],
+  disc:'A farm telehandler boom creeps down when parked with a bale on the forks. List the parts of the circuit you would check, in order.',
+  calc:{inputs:[['W','Load weight W','F',18000],['D','Bore D','len',0.08],['d','Rod diameter d','len',0.04],['f','Setting factor','n',1.3],['R','Pilot ratio (external pilot)','n',3]],
+    compute(v,H){const A=area(v.D),Aa=A-area(v.d),pL=v.W/A,ps=v.f*pL,pr=(ps*A-v.W)/Aa,pp=(ps-pL)/v.R;return [
+      {label:'Cap-end area',eq:'A = π·D² / 4',sub:`π × ${H.n(v.D,'len')}² / 4`,res:H.r(A,'area')},
+      {label:'Annulus area',eq:'A<sub>r</sub> = π·(D² − d²) / 4',sub:`π × (${H.n(v.D,'len')}² − ${H.n(v.d,'len')}²) / 4`,res:H.r(Aa,'area')},
+      {label:'Load-induced pressure',eq:'p<sub>L</sub> = W / A',sub:`${H.n(v.W,'F')} / ${H.n(A,'area')}`,res:H.r(pL,'p')},
+      {label:'Valve setting',eq:'p<sub>s</sub> = f·p<sub>L</sub>',sub:`${fmt(v.f,2)} × ${H.n(pL,'p')}`,res:H.r(ps,'p')},
+      {label:'Rod-side pressure to lower',eq:'p<sub>r</sub> = (p<sub>s</sub>·A − W) / A<sub>r</sub>',sub:`(${H.n(ps,'p')} × ${H.n(A,'area')} − ${H.n(v.W,'F')}) / ${H.n(Aa,'area')}`,res:H.r(pr,'p')},
+      {label:'Pilot pressure, external pilot',eq:'p<sub>pilot</sub> = (p<sub>s</sub> − p<sub>L</sub>) / R',sub:`(${H.n(ps,'p')} − ${H.n(pL,'p')}) / ${fmt(v.R,1)}`,res:H.r(pp,'p')}];}},
+  quiz:[
+    {q:'What is the main purpose of a counterbalance valve?',o:['Stop an overrunning load from falling and lower it under control','Limit pump pressure','Run two cylinders in order','Reduce pressure to a branch'],a:0,why:'It keeps back pressure on the load side so the load cannot run away.'},
+    {q:'A common rule of thumb for the counterbalance setting is…',o:['About 1.3 × the load-induced pressure','Equal to the load-induced pressure','Half the relief setting','Tank pressure'],a:0,why:'A 30% margin keeps the load from opening the valve on its own.'},
+    {q:'A 27 kN (6,000 lbf) load sits on a 76 mm (3 in) bore cylinder. About what setting would you choose?',o:['About 76 bar (1,100 psi)','About 59 bar (849 psi)','About 45 bar (650 psi)','About 117 bar (1,700 psi)'],a:0,why:'p_L = 6,000 ÷ 7.07 ≈ 849 psi; × 1.3 ≈ 1,100 psi ≈ 76 bar.'},
+    {q:'When raising the load, oil passes the counterbalance valve through…',o:['The bypass check valve','The spool after it opens','The internal drain','The pilot line'],a:0,why:'Flow into the cylinder lifts the check; the spool stays closed.'},
+    {q:'Why is a counterbalance valve mounted right on the cylinder?',o:['So a burst hose cannot drop the load','To make adjustment easier','To lower its setting','To cool the oil'],a:0,why:'With no hose between valve and cylinder, a hose failure leaves the oil trapped.'}]},
+reducing:{
+  summary:'A pressure-reducing valve gives one branch a lower, steady pressure than the main system. It is normally open and closes down as its own outlet pressure reaches the setting.',
+  points:['Below the setting, the valve is wide open and the outlet sees inlet pressure.','Outlet pressure, fed under the spool, pushes it up against the spring.','The spool edge throttles the inlet and holds the outlet at the setting.','The spring chamber must drain to tank.'],
+  uses:'Transmission and PTO clutch supply on tractors, hydraulic row-unit downforce on planters, and pilot supply for joystick controls.',
+  watch:'The pressure drop across the valve turns flow into heat. A blocked drain lets leakage build in the spring chamber and the setting creeps up.',
+  apps:[
+    {m:'Tractors',t:'Transmission, PTO clutch and brake supply',d:'Clutch packs and brake pistons need a moderate, steady pressure. A reducing valve takes oil from the main system and holds it at the right level whatever the implements are doing.',n:'Often about 14–20 bar (200–300 psi); check the service manual'},
+    {m:'Planters',t:'Hydraulic row-unit downforce',d:'A reducing valve sets the pressure in the downforce cylinders on every row, so the operator or monitor can dial in down pressure for the soil while the tractor runs at full pressure.',n:'Force per row = pressure × bore area'},
+    {m:'Loaders and combines',t:'Pilot supply for joysticks',d:'Joysticks and pilot-operated valves need a low, clean pilot pressure. A reducing valve supplies it from the main pump.',n:'Pilot supply about 20–35 bar (300–500 psi)'}],
+  disc:'A planter uses hydraulic downforce on every row. How would you change the setting for wet versus dry soil, and what happens to tractor oil temperature?',
+  calc:{inputs:[['pi','Inlet (system) pressure','p',1.4e7],['ps','Reduced setting','p',2.8e6],['D','Cylinder bore D','len',0.04],['n','Number of cylinders (rows)','n',16],['q','Flow through valve Q','Q',2.5e-4]],
+    compute(v,H){const A=area(v.D),po=Math.min(v.pi,v.ps),F=po*A,P=Math.max(0,v.pi-po)*v.q;return [
+      {label:'Outlet pressure',eq:'p<sub>o</sub> = min(p<sub>i</sub>, p<sub>s</sub>)',sub:`min(${H.n(v.pi,'p')}, ${H.n(v.ps,'p')})`,res:H.r(po,'p')},
+      {label:'Bore area',eq:'A = π·D² / 4',sub:`π × ${H.n(v.D,'len')}² / 4`,res:H.r(A,'area')},
+      {label:'Force per cylinder',eq:'F = p<sub>o</sub>·A',sub:`${H.n(po,'p')} × ${H.n(A,'area')}`,res:H.r(F,'F')},
+      {label:'Total force',eq:'F<sub>t</sub> = n·F',sub:`${fmt(v.n,0)} × ${H.n(F,'F')}`,res:H.r(F*v.n,'F')},
+      {label:'Power lost as heat',eq:'P = (p<sub>i</sub> − p<sub>o</sub>)·Q',sub:`(${H.n(v.pi,'p')} − ${H.n(po,'p')}) × ${H.n(v.q,'Q')}`,res:H.r(P,'pow')}];}},
+  quiz:[
+    {q:'In its resting state a pressure-reducing valve is…',o:['Normally open','Normally closed','Always half open','Vented to tank'],a:0,why:'It passes flow freely until outlet pressure reaches the setting.'},
+    {q:'Which pressure does a reducing valve sense?',o:['Its outlet (downstream) pressure','Its inlet pressure','Tank pressure','A remote pilot pressure'],a:0,why:'Outlet pressure is fed under the spool and moves it against the spring.'},
+    {q:'Why does a reducing valve need an external drain?',o:['Leakage into the spring chamber must go to tank or the setting creeps up','To raise inlet pressure','To open faster','It does not need one'],a:0,why:'Both ports are pressurized, so trapped leakage would add to the spring force.'},
+    {q:'On a tractor, which circuit is a typical place for a reducing valve?',o:['Transmission or PTO clutch supply','Main pump relief','Loader float','Return filter bypass'],a:0,why:'Clutch packs need a steady, moderate pressure taken from the main system.'},
+    {q:'A planter downforce cylinder has a 38 mm (1.5 in) bore at 28 bar (400 psi). About how much force does it apply?',o:['About 3.1 kN (707 lbf)','About 2.7 kN (600 lbf)','About 8.4 kN (1,885 lbf)','About 1.2 kN (267 lbf)'],a:0,why:'A = π × 1.5² ÷ 4 = 1.77 in²; 400 × 1.77 ≈ 707 lbf ≈ 3.1 kN.'}]},
+unloading:{
+  summary:'An unloading valve sends pump flow to tank at low pressure once a remote signal says the system is charged. Unlike a relief valve, it reacts to a pilot pressure taken from elsewhere in the circuit.',
+  points:['While the remote pilot pressure is below the setting, the pump feeds the system.','When the pilot pressure reaches the setting, the spool lifts and the pump dumps to tank.','Pump pressure falls to a low value, saving power and heat.','A check valve keeps the system or accumulator charged while the pump idles.'],
+  uses:'Hi-lo (two-stage) pumps on log splitters, accumulator charging on tractors and harvesters, and PTO hydraulic power packs.',
+  watch:'Without enough difference between the unload and reload pressures, the pump cycles rapidly. A leaking check valve drains the accumulator back through the open valve.',
+  apps:[
+    {m:'Log splitters and wood processors',t:'Hi-lo (two-stage) pumps',d:'A large low-pressure section and a small high-pressure section work together. When splitting pressure rises, the large section unloads to tank, so the engine can make high pressure with less power and the ram still moves fast.',n:'Kick-down often about 35–50 bar (500–750 psi)'},
+    {m:'Tractors and harvesters',t:'Accumulator charging',d:'In circuits with an accumulator, such as brake or suspension supply, the pump charges the accumulator and then unloads. The check valve keeps the system charged while the pump idles.',n:'Unload and reload pressures set apart'},
+    {m:'PTO hydraulic power packs',t:'Fixed-pump power units',d:'PTO-driven power units with fixed pumps unload between work strokes, reducing heat and fuel use.',n:'Unloaded pressure about 3–10 bar (50–150 psi)'}],
+  disc:'Compare a log splitter with and without a two-stage pump. How do cycle time and engine load change?',
+  calc:{inputs:[['ps','System pressure','p',1.4e7],['pu','Unloaded pressure','p',7e5],['q','Pump flow Q','Q',6.33e-4],['t','Time the pump is unloaded (%)','n',70]],
+    compute(v,H){const PL=v.ps*v.q,PU=v.pu*v.q,t=clamp(v.t/100),withU=(1-t)*PL+t*PU;return [
+      {label:'Power at system pressure',eq:'P<sub>s</sub> = p<sub>s</sub>·Q',sub:`${H.n(v.ps,'p')} × ${H.n(v.q,'Q')}`,res:H.r(PL,'pow')},
+      {label:'Power while unloaded',eq:'P<sub>u</sub> = p<sub>u</sub>·Q',sub:`${H.n(v.pu,'p')} × ${H.n(v.q,'Q')}`,res:H.r(PU,'pow')},
+      {label:'Average, dumping over a relief',eq:'P̄ = P<sub>s</sub>',sub:`${H.n(PL,'pow')}`,res:H.r(PL,'pow')},
+      {label:'Average, with unloading',eq:'P̄ = (1 − t)·P<sub>s</sub> + t·P<sub>u</sub>',sub:`${fmt(1-t,2)} × ${H.n(PL,'pow')} + ${fmt(t,2)} × ${H.n(PU,'pow')}`,res:H.r(withU,'pow')},
+      {label:'Average saving',eq:'ΔP = P<sub>s</sub> − P̄',sub:`${H.n(PL,'pow')} − ${H.n(withU,'pow')}`,res:H.r(PL-withU,'pow')}];}},
+  quiz:[
+    {q:'What signal opens an unloading valve?',o:['A remote pilot pressure from elsewhere in the circuit','Its own inlet pressure','Its outlet pressure','The spring alone'],a:0,why:'That is the difference from a relief valve, which reacts to its own inlet.'},
+    {q:'When the valve unloads, pump outlet pressure…',o:['Drops to a low value','Rises to the relief setting','Stays at system pressure','Goes negative'],a:0,why:'Pump flow goes to tank through a wide-open path.'},
+    {q:'In a log splitter with a two-stage pump, the unloading valve…',o:['Dumps the large low-pressure section when splitting pressure rises','Raises the relief setting','Slows the return stroke','Stops the engine'],a:0,why:'Only the small high-pressure section works against the log, cutting power demand.'},
+    {q:'A 38 L/min (10 gpm) pump would otherwise sit at 138 bar (2,000 psi); unloaded it runs at 7 bar (100 psi). About how much power does unloading save?',o:['About 8.3 kW (11.1 hp)','About 0.9 kW (1.2 hp)','About 4.3 kW (5.8 hp)','About 15 kW (20 hp)'],a:0,why:'(2,000 − 100) × 10 ÷ 1,714 ≈ 11.1 hp ≈ 8.3 kW.'},
+    {q:'Why is a check valve placed after the unloading valve in an accumulator circuit?',o:['So the accumulator stays charged while the pump unloads','To raise pump flow','To cool the oil','To make the valve normally open'],a:0,why:'Without it, accumulator oil would run back to tank through the open valve.'}]},
+'pilot-relief':{
+  summary:'A pilot-operated relief uses a small pilot valve to control a large main spool. Pressure is balanced across the main spool until the pilot dart opens; then a small pressure drop lifts the spool and dumps pump flow to tank.',
+  points:['Fluid from the pump enters the inlet port.','It passes through the orifice and fills the chamber above the main spool and the pilot chamber.','Equal pressure above the spool plus the biasing spring keep the spool closed.','At the setting, pilot pressure pushes the dart off its seat.','Pilot fluid drains to the reservoir past the open dart.','The orifice can’t keep up, pressure above the spool drops and the spool lifts.','Excess pump flow passes the main spool to the reservoir, holding pressure near the setting.'],
+  uses:'Main relief on high-flow tractor and combine hydraulics, remote venting to unload PTO pumps, and two-pressure implement circuits.',
+  watch:'A blocked orifice keeps the spool from opening properly, and a dirty dart seat makes pressure drift. Check the vent line for leaks if pressure will not build.',
+  apps:[
+    {m:'High-flow tractors and combines',t:'Main system relief',d:'Header-lift and unloading-auger circuits move a lot of oil. A pilot-operated relief keeps pressure close to the setting across the whole flow range, with a compact spring.',n:'Settings often 175–210 bar (2,500–3,000 psi) or more'},
+    {m:'PTO hydraulic pumps',t:'Remote venting to unload',d:'Connecting the vent port to tank through a small solenoid valve drops the relief to a low pressure and unloads the pump while the operator is idle.',n:'Vented pressure about 3–10 bar (50–150 psi)'},
+    {m:'Two-pressure implements',t:'Remote pressure selection',d:'A small remote relief on the vent line gives a second, lower setting, for example a gentle mode for a reel or a header float function.',n:'Remote setting below the main setting'}],
+  disc:'Why would a large combine use a pilot-operated relief instead of a direct-acting one? Use spring size and pressure override in your answer.',
+  calc:{inputs:[['fp','Pilot spring force','F',75],['dp','Dart seat diameter','len',0.0024],['fb','Biasing spring force','F',65],['ds','Main spool diameter','len',0.019],['q','Pump flow Q','Q',1.833e-3]],
+    compute(v,H){const Ap=area(v.dp),pp=v.fp/Ap,As=area(v.ds),db=v.fb/As,pf=pp+db;return [
+      {label:'Dart seat area',eq:'A<sub>d</sub> = π·d<sub>d</sub>² / 4',sub:`π × ${H.n(v.dp,'len')}² / 4`,res:H.r(Ap,'area')},
+      {label:'Pilot setting',eq:'p<sub>p</sub> = F<sub>p</sub> / A<sub>d</sub>',sub:`${H.n(v.fp,'F')} / ${H.n(Ap,'area')}`,res:H.r(pp,'p')},
+      {label:'Extra pressure to lift spool',eq:'Δp = F<sub>b</sub> / A<sub>s</sub>',sub:`${H.n(v.fb,'F')} / ${H.n(As,'area')}`,res:H.r(db,'p')},
+      {label:'Full-flow pressure',eq:'p<sub>f</sub> = p<sub>p</sub> + Δp',sub:`${H.n(pp,'p')} + ${H.n(db,'p')}`,res:`${H.r(pf,'p')} (override ${fmt(db/pp*100,1)}%)`},
+      {label:'Heat when relieving',eq:'P = p<sub>f</sub>·Q',sub:`${H.n(pf,'p')} × ${H.n(v.q,'Q')}`,res:H.r(pf*v.q,'pow')}];}},
+  quiz:[
+    {q:'What is the main advantage of a pilot-operated relief valve?',o:['Very little pressure override at high flow','Faster response than any other valve','No tank line needed','No spring needed'],a:0,why:'The light biasing spring only has to beat a small pressure difference.'},
+    {q:'What does the orifice in the main spool do?',o:['Creates a pressure drop when pilot flow starts, unbalancing the spool','Limits pump flow','Filters the oil','Sets the relief pressure'],a:0,why:'With no flow, pressure is equal on both sides; pilot flow through the orifice drops the chamber pressure.'},
+    {q:'Connecting the vent port to tank will…',o:['Unload the pump at low pressure','Raise the relief setting','Lock the main spool shut','Reverse the flow'],a:0,why:'With the chamber vented, only the biasing spring holds the spool.'},
+    {q:'Why can the main biasing spring be so light?',o:['Pressure above and below the spool is nearly balanced','The spool is very small','Oil is incompressible','The dart pushes the spool directly'],a:0,why:'It only has to hold the spool against a small imbalance.'},
+    {q:'Which machine is most likely to use a pilot-operated main relief?',o:['A high-flow combine hydraulic system','A sprayer nozzle body','A hand jack','A garden hose'],a:0,why:'High flow and tight pressure control suit the pilot-operated design.'}]}
+};
+/* randomized calculation problems for the course quiz, in the chosen units */
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function mkq(q,correct,dists,kind,why){const seen=new Set(),o=[];[correct,...dists].forEach(x=>{const s=H.e(x,kind);if(isFinite(x)&&x>0&&!seen.has(s)){seen.add(s);o.push(s);}});let m=1.6;while(o.length<4){const s=H.e(correct*m,kind);if(!seen.has(s)){seen.add(s);o.push(s);}m+=0.45;}return {q,o:o.slice(0,4),a:0,why};}
+const GENS=[
+  ()=>{const F=pick([15000,20000,25000,30000,40000]),D=pick([0.05,0.063,0.08,0.1]),A=area(D),p=F/A;return mkq(`A load of ${H.e(F,'F')} rests on a cylinder with a ${H.e(D,'len')} bore. What pressure does it create?`,p,[F/(D*D),F/(Math.PI*D),p*2],'p',`A = π·D²/4 = ${H.e(A,'area')}, so p = F/A = ${H.e(p,'p')}.`);},
+  ()=>{const p=pick([1.2e7,1.4e7,1.6e7,1.75e7,2e7]),Q=pick([3e-4,5e-4,7.5e-4,1e-3,1.5e-3]),P=p*Q;return mkq(`A pump delivering ${H.e(Q,'Q')} dumps over a relief valve at ${H.e(p,'p')}. How much power becomes heat?`,P,[P/2,P*1.7,p*Q*0.25],'pow',`P = p·Q = ${H.e(P,'pow')}.`);},
+  ()=>{const W=pick([12000,18000,24000,30000]),D=pick([0.063,0.08,0.1]),A=area(D),pL=W/A,ps=1.3*pL;return mkq(`A ${H.e(W,'F')} load hangs on a cylinder with a ${H.e(D,'len')} bore. Using the 1.3 rule, what counterbalance setting would you choose?`,ps,[pL,pL*2,pL*0.7],'p',`p_L = W/A = ${H.e(pL,'p')}; 1.3 × p_L = ${H.e(ps,'p')}.`);},
+  ()=>{const k=pick([100000,150000,200000]),x=pick([0.005,0.006,0.008]),d=pick([0.008,0.01,0.012]),A=area(d),p=k*x/A;return mkq(`A relief poppet has a ${H.e(d,'len')} seat. Its ${H.e(k,'k')} spring is compressed ${H.e(x,'len')}. What is the cracking pressure?`,p,[k*x/(d*d),p/2,k*x/(Math.PI*d)],'p',`F = k·x = ${H.e(k*x,'F')}; A = ${H.e(A,'area')}; p = F/A = ${H.e(p,'p')}.`);},
+  ()=>{const p=pick([2e6,2.5e6,3e6,3.5e6]),D=pick([0.032,0.04,0.05]),A=area(D),F=p*A;return mkq(`A reducing valve feeds ${H.e(p,'p')} to a planter downforce cylinder with a ${H.e(D,'len')} bore. What force does each row get?`,F,[p*D*D,F*2,p*Math.PI*D*D],'F',`A = ${H.e(A,'area')}; F = p·A = ${H.e(F,'F')}.`);}
+];
+/* ---------- page ---------- */
+const $=id=>document.getElementById(id);
+const view=$('view'),ul=$('typeList');
+const store={get(k){try{return JSON.parse(localStorage.getItem('pcv:'+k));}catch(e){return null;}},set(k,v){try{localStorage.setItem('pcv:'+k,JSON.stringify(v));}catch(e){}}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const symInner=s=>{const m=s.match(/viewBox="([^"]+)"[^>]*>([\s\S]*)<\/svg>/);return m?[m[1],m[2]]:['0 0 260 180',''];};
+V.forEach(v=>{const li=document.createElement('li');const [vb,inner]=symInner(v.symbol());li.innerHTML=`<button class="typebtn" data-type="${v.key}"><svg viewBox="${vb}" aria-hidden="true">${inner}</svg><span>${v.name.replace(/ valve$/,'')}</span></button>`;ul.appendChild(li);});
+{const li=document.createElement('li');li.className='sep';li.innerHTML=`<button class="typebtn" data-type="exam"><svg viewBox="0 0 260 180" aria-hidden="true"><rect x="40" y="20" width="180" height="140"/><path d="M80 70 L110 100 L170 50"/></svg><span>Course quiz</span></button>`;ul.appendChild(li);}
+ul.addEventListener('click',e=>{const b=e.target.closest('[data-type]');if(b)go(b.dataset.type);});
+function go(k){if(location.hash.slice(1)!==k)location.hash=k;else select(k);}
 
 function gaugeSVG(g){let t='';for(let i=0;i<=10;i++){const a=(-180+18*i)*Math.PI/180,r1=i%5?36:33;t+=`<line stroke="var(--muted)" stroke-width="${i%5?1:1.6}" x1="${(60+r1*Math.cos(a)).toFixed(1)}" y1="${(62+r1*Math.sin(a)).toFixed(1)}" x2="${(60+39*Math.cos(a)).toFixed(1)}" y2="${(62+39*Math.sin(a)).toFixed(1)}"/>`;}
-  let set='';if(g.set){const a=(-180+180*g.set/g.max)*Math.PI/180;set=`<line class="gset" x1="${(60+44*Math.cos(a)).toFixed(1)}" y1="${(62+44*Math.sin(a)).toFixed(1)}" x2="${(60+56*Math.cos(a)).toFixed(1)}" y2="${(62+56*Math.sin(a)).toFixed(1)}"/>`;}
-  return `<svg viewBox="0 0 120 72" aria-hidden="true"><path class="gtrack" d="M10 62 A50 50 0 0 1 110 62"/><path class="gfill" data-g="f" d="M10 62 A50 50 0 0 1 110 62" pathLength="100" stroke="${g.col}" stroke-dasharray="100" stroke-dashoffset="100"/>${t}${set}<line class="gneedle" data-g="n" x1="60" y1="62" x2="60" y2="30"/><circle class="ghub" cx="60" cy="62" r="4.5"/></svg>`;}
+  let set='';if(g.set){const a=(-180+180*g.set/g.max)*Math.PI/180;set=`<line class="gset" x1="${(60+43*Math.cos(a)).toFixed(1)}" y1="${(62+43*Math.sin(a)).toFixed(1)}" x2="${(60+54*Math.cos(a)).toFixed(1)}" y2="${(62+54*Math.sin(a)).toFixed(1)}"/>`;}
+  return `<svg viewBox="0 0 120 70" aria-hidden="true"><path class="gtrack" d="M10 62 A50 50 0 0 1 110 62"/><path class="gfill" data-g="f" d="M10 62 A50 50 0 0 1 110 62" pathLength="100" style="stroke:${g.col}" stroke-dasharray="100" stroke-dashoffset="100"/>${t}${set}<line class="gneedle" data-g="n" x1="60" y1="62" x2="60" y2="30"/><circle class="ghub" cx="60" cy="62" r="4.5"/></svg>`;}
 
-let cur=null;
+/* ---------- quiz ---------- */
+function renderQuiz(box,makeQs,key,title){
+  let qs,ans,right;
+  function build(){qs=makeQs();ans=0;right=0;const best=store.get('best:'+key);
+    box.innerHTML=`<div class="qhead"><h3>${title}</h3><p class="qmeta">${qs.length} questions${best!=null?`. Best so far: ${best} of ${qs.length}`:''}</p></div>`+
+      qs.map((q,i)=>`<div class="qq" data-i="${i}"><p class="qt"><b>${i+1}.</b>${q.q}</p><div class="opts">${shuffle(q.o.map((t,j)=>j)).map(j=>`<button class="opt" data-j="${j}">${q.o[j]}</button>`).join('')}</div><p class="why" hidden></p></div>`).join('')+
+      `<div class="qfoot"><p class="qres" aria-live="polite">Pick an answer for each question.</p><button class="btn" data-ui="retake">${key==='exam'?'New questions':'Start again'}</button></div>`;
+    box.querySelectorAll('.qq').forEach(el=>{const q=qs[+el.dataset.i];el.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+      if(el.classList.contains('done'))return;el.classList.add('done');const ok=+b.dataset.j===q.a;ans++;if(ok)right++;
+      el.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(+x.dataset.j===q.a)x.classList.add('ok');});if(!ok)b.classList.add('no');
+      const w=el.querySelector('.why');w.hidden=false;w.innerHTML=`<b>${ok?'Correct.':'Not quite.'}</b> ${q.why}`;
+      const res=box.querySelector('.qres');
+      if(ans===qs.length){const prev=store.get('best:'+key);if(prev==null||right>prev)store.set('best:'+key,right);const pct=Math.round(right/qs.length*100);res.innerHTML=`<b>${right} of ${qs.length} correct (${pct}%).</b> ${pct>=80?'Well done.':pct>=60?'Good. Read the explanations above.':'Watch the animation again and check the calculator, then try once more.'}`;}
+      else res.textContent=`${right} of ${ans} correct so far, ${qs.length-ans} to go.`;}));});
+    box.querySelector('[data-ui=retake]').addEventListener('click',()=>{build();box.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});});}
+  build();
+}
+
+/* ---------- calculator (stored in SI, shown in either system) ---------- */
+const calcVals={};
+let calcRefresh=null;
+function renderCalc(box,key,cd){
+  const vals=calcVals[key]||(calcVals[key]=Object.fromEntries(cd.inputs.map(([id,,,d])=>[id,d])));
+  box.querySelector('.calcgrid').innerHTML=cd.inputs.map(([id,label,kind])=>`<label>${label}<span class="in"><input type="number" step="any" data-ci="${id}" data-kind="${kind}"><span class="u" data-cu="${id}"></span></span></label>`).join('');
+  const out=box.querySelector('tbody');
+  function sync(){box.querySelectorAll('[data-ci]').forEach(i=>{const E=EVERY[units][i.dataset.kind];i.value=+(vals[i.dataset.ci]*E[1]).toFixed(Math.max(E[2],2));box.querySelector(`[data-cu="${i.dataset.ci}"]`).textContent=E[0];});}
+  function calc(){out.innerHTML=cd.compute(vals,H).map(r=>`<tr><td>${r.label}</td><td class="eq">${r.eq}</td><td class="sub">${r.sub}</td><td class="res">${r.res}</td></tr>`).join('');
+    box.querySelector('.note').textContent=units==='us'?'Consistent US units in the substitutions: lbf, inches, seconds (psi, in², in³/s, in·lbf/s). Results are also shown in everyday units. Ideal model: friction, flow forces and leakage are ignored.':'Consistent SI units in the substitutions: newtons, metres, seconds (Pa, m², m³/s, W). Results are also shown in everyday units. Ideal model: friction, flow forces and leakage are ignored.';}
+  box.querySelectorAll('[data-ci]').forEach(i=>i.addEventListener('change',()=>{const x=parseFloat(i.value);if(isFinite(x)&&x>=0)vals[i.dataset.ci]=x/EVERY[units][i.dataset.kind][1];sync();calc();}));
+  box.querySelector('[data-ui=reset]').addEventListener('click',()=>{cd.inputs.forEach(([id,,,d])=>vals[id]=d);sync();calc();});
+  sync();calc();
+  return ()=>{sync();calc();};
+}
+
+/* ---------- course quiz ---------- */
+let cur=null,curKey=null;
+function renderExam(){
+  cur=null;curKey='exam';calcRefresh=null;markNav('exam');
+  view.innerHTML=`<div class="card"><div class="figtop"><h2>Course quiz</h2></div><p>Ten concept questions drawn from all seven valves plus five calculation problems with new numbers each time, in the units chosen at the top.</p></div><div class="card mt" data-q></div><footer>Typical settings are for teaching. Always use the machine manufacturer’s service manual for real adjustments.</footer>`;
+  renderQuiz(view.querySelector('[data-q]'),()=>{const pool=[];Object.keys(C).forEach(k=>C[k].quiz.forEach(q=>pool.push(q)));return shuffle(pool).slice(0,10).concat(shuffle(GENS).map(g=>g()));},'exam','Pressure control valves');
+  document.title='Course quiz: pressure control valves';syncPresenter();
+}
+function markNav(k){document.querySelectorAll('[data-type]').forEach(b=>{if(b.dataset.type===k)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});}
+
+/* ---------- one valve ---------- */
 function select(key){
-  const v=V.find(x=>x.key===key)||V[0];
-  rail.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.key===v.key)));
-  const sl=v.slider,mk=sl.mark!=null?((sl.mark-sl.min)/(sl.max-sl.min)*100):null;
-  view.innerHTML=`<div class="main">
-   <div class="card stagecard"><div class="vtitle"><h2>${v.name}</h2><span class="pill" data-k="closed"><i></i><span data-ui="title"></span></span></div>
-     <div class="stage">${v.svg()}</div>
-     <div class="trace"><div class="th"><span style="margin:0">Pressure over the last 10 seconds</span><div>${v.gauges.map(g=>`<span><i style="background:${g.col}"></i>${g.label}</span>`).join('')}</div></div>
-       <svg viewBox="0 0 600 130" preserveAspectRatio="none" aria-hidden="true"><line class="tgrid" x1="0" y1="124" x2="600" y2="124"/><line class="tgrid" x1="0" y1="66" x2="600" y2="66"/><line class="tgrid" x1="0" y1="8" x2="600" y2="8"/>${v.gauges[0].set||v.gauges[1]&&v.gauges[1].set?`<line class="tset" data-t="set" x1="0" x2="600"/>`:''}${v.gauges.map((g,i)=>`<polyline class="tline" data-t="${i}" stroke="${g.col}" points=""/>`).join('')}<text class="tlab" x="4" y="20">${v.gauges[0].max} psi</text><text class="tlab" x="4" y="120">0</text></svg></div>
-   </div>
-   <aside class="side">
-     <div class="card ctrl">${v.modes?`<div class="seg" role="group" aria-label="Operating mode">${v.modes.map(m=>`<button data-mode="${m.id}" aria-pressed="false">${m.label}</button>`).join('')}</div>`:''}
-       <div class="sl"><label for="rng">${sl.label}</label><output><span>0</span> <small>psi</small></output><div class="track">${mk!=null?`<span class="mk" style="left:calc(${mk}% )" data-l="${sl.markL}"></span>`:''}<input id="rng" type="range" min="${sl.min}" max="${sl.max}" step="1" value="${sl.value}"></div></div>
-       <div class="btns"><button class="btn" data-ui="auto" aria-pressed="false">Auto</button><button class="btn" data-ui="slow" aria-pressed="false">Slow motion</button></div>
-       <p class="note">${v.note}</p></div>
-     <div class="card gauges">${v.gauges.map(g=>`<div class="gauge">${gaugeSVG(g)}<div class="gval"><span>0</span> <small>psi</small></div><div class="glab">${g.label}</div></div>`).join('')}</div>
-     <div class="card explain"><h3>What’s happening</h3><p data-ui="cap"></p>${v.steps?`<ol class="steps">${v.steps.map((s,i)=>`<li data-step="${i+1}"><b>${i+1}</b><span>${s}</span></li>`).join('')}</ol>`:''}</div>
-     <div class="card symcard"><h3>Schematic symbol</h3><div class="sym">${v.symbol()}</div></div>
-   </aside></div>`;
+  if(key==='exam'){renderExam();return;}
+  const v=V.find(x=>x.key===key)||V[0],T=C[v.key];curKey=v.key;markNav(v.key);
+  const sl=v.slider,mk=sl.mark!=null?((sl.mark-sl.min)/(sl.max-sl.min)*100):null,live=!!v.steps;
+  view.innerHTML=`<div class="card">
+    <div class="figtop"><h2>${v.name.replace(/ valve$/,'')}</h2><span class="state" data-k="closed"><i></i><span data-ui="title"></span></span></div>
+    <div class="stage">${v.svg()}</div>
+    <div class="legend" aria-hidden="true"><span><i style="background:var(--hp)"></i>Pressure oil</span><span><i style="background:var(--pilot)"></i>Pilot oil</span><span><i style="background:var(--met)"></i>Reduced or metered oil</span><span><i style="background:var(--lp)"></i>Return oil</span><span><i style="background:var(--drain)"></i>Drain</span><span><i style="background:var(--spring)"></i>Spring</span></div>
+    <div class="toolbar">
+      <button class="btn" data-ui="auto" aria-pressed="true">Pause</button>
+      ${v.modes?`<span class="seg" role="group" aria-label="Operating mode">${v.modes.map(m=>`<button data-mode="${m.id}" aria-pressed="false">${m.label}</button>`).join('')}</span>`:''}
+      <label data-ui="sl">${sl.label} <span class="rng">${mk!=null?`<span class="mk" style="left:${mk}%" title="${sl.markL}"></span>`:''}<input type="range" id="rng" min="${sl.min}" max="${sl.max}" step="1" value="${sl.value}"></span><output data-ui="out"></output></label>
+      <label>Speed <select data-ui="speed"><option value="1" selected>Normal</option><option value="0.3">Slow motion</option></select></label>
+      <label><input type="checkbox" data-ui="labels" checked> Labels</label>
+    </div>
+    <p class="status" data-ui="cap" aria-live="polite"></p>
+    <div class="readings"><div class="gauges">${v.gauges.map(g=>`<div class="gauge">${gaugeSVG(g)}<div class="gval"><span>0</span> <small data-ui="gu">bar</small></div><div class="glab">${g.label}</div></div>`).join('')}</div>
+      <div class="trace"><div class="th"><span style="margin:0" data-ui="tlab"></span><span>${v.gauges.map(g=>`<span><i style="background:${g.col}"></i>${g.label}</span>`).join('')}</span></div>
+      <svg viewBox="0 0 600 130" preserveAspectRatio="none" aria-hidden="true"><line class="tgrid" x1="0" y1="124" x2="600" y2="124"/><line class="tgrid" x1="0" y1="66" x2="600" y2="66"/><line class="tgrid" x1="0" y1="8" x2="600" y2="8"/>${(v.gauges[0].set||v.gauges[1]&&v.gauges[1].set)?`<line class="tset" data-t="set" x1="0" x2="600"/>`:''}${v.gauges.map((g,i)=>`<polyline class="tline" data-t="${i}" style="stroke:${g.col}" points=""/>`).join('')}</svg></div></div>
+  </div>
+  <div class="below">
+    <div class="card"><h3>How it works</h3><p>${T.summary}</p><ol class="howsteps${live?' live':''}">${T.points.map((p,i)=>`<li data-step="${i+1}">${p}</li>`).join('')}</ol><button class="btn nextpt" data-ui="nextpt">Next point <kbd>N</kbd></button>
+      <h4>Used for</h4><p>${T.uses}</p><h4>Watch for</h4><p>${T.watch}</p></div>
+    <div class="card"><h3>Schematic symbol</h3><div class="symbol">${v.symbol()}</div><p class="note">Simplified ISO-style symbol. The arrow moves with the valve.</p><h4>Setting in this animation</h4><p data-ui="vnote"></p></div>
+  </div>
+  <div class="card mt"><h3>In agriculture</h3><div class="apps">${T.apps.map(a=>`<div class="appx"><p class="m">${a.m}</p><h4>${a.t}</h4><p>${a.d}</p><p class="typ"><b>Typical:</b> ${a.n}</p></div>`).join('')}</div>
+    <div class="disc"><b>Class discussion</b>${T.disc}</div></div>
+  <div class="card mt" data-ui="calc"><h3>Calculator</h3><div class="calcgrid"></div><div class="tablewrap"><table class="calc"><thead><tr><th>Quantity</th><th>Formula</th><th>Substitution (consistent units)</th><th>Result</th></tr></thead><tbody></tbody></table></div><p class="note"></p><button class="btn" data-ui="reset">Reset values</button></div>
+  <div class="card mt" data-q></div>
+  <footer>Drawings are simplified and not to scale. Typical settings are for teaching; always use the machine manufacturer’s service manual for real adjustments.</footer>`;
+  document.title=`${v.name}: animated cross-section`;
+  calcRefresh=renderCalc(view.querySelector('[data-ui=calc]'),v.key,T.calc);
+  renderQuiz(view.querySelector('[data-q]'),()=>T.quiz.slice(),'q:'+v.key,'Quiz');
+  const q=s=>view.querySelector(s);
+  const vnote=q('[data-ui=vnote]'),tlab=q('[data-ui=tlab]');
+  const unitText=()=>{vnote.textContent=v.note();tlab.textContent=`Pressure over the last 10 seconds, 0 to ${UP(v.gauges[0].max)}`;view.querySelectorAll('[data-ui=gu]').forEach(e=>e.textContent=UPu());};
+  unitText();
+  /* points reveal in lecture mode */
+  const kps=[...view.querySelectorAll('.howsteps li')];let kpN=lecture&&!live?0:kps.length;
+  const showKp=()=>{kps.forEach((li,i)=>li.classList.toggle('hid',i>=kpN));q('[data-ui=nextpt]').disabled=kpN>=kps.length;};
+  q('[data-ui=nextpt]').addEventListener('click',()=>{kpN=Math.min(kps.length,kpN+1);showKp();});showKp();
+  q('[data-ui=labels]').addEventListener('change',e=>q('.stage').classList.toggle('nolabels',!e.target.checked));
+
   const parts={},zones={},springs={},flows={};
   view.querySelectorAll('[data-p]').forEach(e=>(parts[e.dataset.p]=parts[e.dataset.p]||[]).push(e));
   view.querySelectorAll('[data-z]').forEach(e=>(zones[e.dataset.z]=zones[e.dataset.z]||[]).push(e));
   view.querySelectorAll('[data-s]').forEach(e=>(springs[e.dataset.s]=springs[e.dataset.s]||[]).push(e));
   const NS='http://www.w3.org/2000/svg';
-  view.querySelectorAll('[data-f]').forEach(p=>{const len=p.getTotalLength(),n=Math.max(4,Math.round(len/17));const g=document.createElementNS(NS,'g');g.style.opacity='0';const segs=[];
+  view.querySelectorAll('.stage [data-f]').forEach(p=>{const len=p.getTotalLength(),n=Math.max(4,Math.round(len/17));const g=document.createElementNS(NS,'g');g.style.opacity='0';const segs=[];
     for(let i=0;i<n;i++){const a=document.createElementNS(NS,'line');a.setAttribute('class','pt0');const b=document.createElementNS(NS,'line');b.setAttribute('class','pt1');g.appendChild(a);g.appendChild(b);segs.push([a,b]);}
     const sm=document.createElementNS(NS,'path');sm.setAttribute('d',p.getAttribute('d'));sm.setAttribute('class','stream');sm.setAttribute('pathLength','1');p.after(sm);sm.after(g);(flows[p.dataset.f]=flows[p.dataset.f]||[]).push({p,len,n,g,segs,u:Math.random()*20,a:0,r:0,sm,sw:+(p.dataset.sw||14),sc:null});});
   const zc={};
@@ -521,43 +847,75 @@ function select(key){
     z(n,psi,role){const tgt=roleColor(role,psi/v.scale);let cc=zc[n];if(!cc||c.first)cc=zc[n]=tgt.slice();else for(let i=0;i<3;i++)cc[i]+=(tgt[i]-cc[i])*Math.min(1,c.dt*6);
       const col=`rgb(${cc.map(Math.round).join(',')})`;(zones[n]||[]).forEach(e=>e.setAttribute(e.hasAttribute('data-zs')?'stroke':'fill',col));},
     f(n,amt,dir=1,spd=1,role='P'){(flows[n]||[]).forEach(fl=>{fl.a=ease(fl.a,clamp(amt),c.dt,8);fl.g.style.opacity=fl.a.toFixed(3);
-      fl.r=ease(fl.r,amt>0.02?1:0,c.dt,amt>0.02?2.2:5);const col=roleColor(role,0.85);if(!fl.sc)fl.sc=col.slice();for(let i=0;i<3;i++)fl.sc[i]+=(col[i]-fl.sc[i])*Math.min(1,c.dt*6);
-      const sm=fl.sm,wob=reduced?1:1+0.06*Math.sin(st.t*9+fl.len);sm.style.stroke=`rgb(${fl.sc.map(Math.round).join(',')})`;sm.style.strokeWidth=(fl.sw*(0.45+0.55*fl.a)*wob).toFixed(1);sm.style.opacity=(Math.min(fl.a*1.4,1)*0.92).toFixed(3);sm.style.strokeDasharray=fl.r.toFixed(3)+' 1.01';sm.style.strokeDashoffset=dir<0?(-(1-fl.r)).toFixed(3):'0';
+      fl.r=ease(fl.r,amt>0.02?1:0,c.dt,amt>0.02?2.2:5);const col=streamColor(role);if(!fl.sc)fl.sc=col.slice();for(let i=0;i<3;i++)fl.sc[i]+=(col[i]-fl.sc[i])*Math.min(1,c.dt*6);
+      const sm=fl.sm,wob=reduced?1:1+0.06*Math.sin(st.t*9+fl.len);sm.style.stroke=`rgb(${fl.sc.map(Math.round).join(',')})`;sm.style.strokeWidth=(fl.sw*(0.45+0.55*fl.a)*wob).toFixed(1);sm.style.opacity=(Math.min(fl.a*1.4,1)*0.9).toFixed(3);sm.style.strokeDasharray=fl.r.toFixed(3)+' 1.01';sm.style.strokeDashoffset=dir<0?(-(1-fl.r)).toFixed(3):'0';
       if(fl.a<0.01)return;
       if(!reduced)fl.u+=dir*fl.a*spd*c.dt*95;const sp=fl.len/fl.n;
       for(let i=0;i<fl.n;i++){const s=(((fl.u+i*sp)%fl.len)+fl.len)%fl.len;const p1=fl.p.getPointAtLength(s),p0=fl.p.getPointAtLength(clamp(s-6*dir,0,fl.len));
         const edge=Math.min(1,s/12,(fl.len-s)/12);const [a,b]=fl.segs[i];
         for(const e of [a,b]){e.setAttribute('x1',p0.x.toFixed(1));e.setAttribute('y1',p0.y.toFixed(1));e.setAttribute('x2',p1.x.toFixed(1));e.setAttribute('y2',p1.y.toFixed(1));e.style.opacity=edge.toFixed(2);}}});}};
-  const q=s=>view.querySelector(s);
-  const range=q('#rng'),outv=q('.sl output span'),autoB=q('[data-ui=auto]'),slowB=q('[data-ui=slow]'),titleEl=q('[data-ui=title]'),pill=q('.pill'),capEl=q('[data-ui=cap]'),slw=q('.sl');
+  const range=q('#rng'),outv=q('[data-ui=out]'),autoB=q('[data-ui=auto]'),speed=q('[data-ui=speed]'),titleEl=q('[data-ui=title]'),badge=q('.state'),capEl=q('[data-ui=cap]'),slw=q('[data-ui=sl]');
   const gEls=[...view.querySelectorAll('.gauge')].map(g=>({n:g.querySelector('[data-g=n]'),f:g.querySelector('[data-g=f]'),v:g.querySelector('.gval span')}));
-  const modeBtns=[...view.querySelectorAll('.seg button')],stepEls=[...view.querySelectorAll('.steps li')];
+  const modeBtns=[...view.querySelectorAll('[data-mode]')];
   const tl=[...view.querySelectorAll('.tline')],tset=q('[data-t=set]');const tmax=v.gauges[0].max;
   if(tset){const sp=v.gauges[0].set||v.gauges[1].set;const y=(124-sp/tmax*116).toFixed(1);tset.setAttribute('y1',y);tset.setAttribute('y2',y);}
   const hist=v.gauges.map(()=>[]);let sampleT=0;
-  function setAuto(on){st.auto=on;autoB.setAttribute('aria-pressed',String(on));autoB.textContent=on?'Pause auto':'Auto';}
-  let slow=false;slowB.addEventListener('click',()=>{slow=!slow;slowB.setAttribute('aria-pressed',String(slow));});
+  function setAuto(on){st.auto=on;autoB.setAttribute('aria-pressed',String(on));autoB.textContent=on?'Pause':'Play';}
   autoB.addEventListener('click',()=>setAuto(!st.auto));
   range.addEventListener('input',()=>{st.P=+range.value;setAuto(false);});
   modeBtns.forEach(b=>b.addEventListener('click',()=>{st.mode=b.dataset.mode;setAuto(false);}));
   setAuto(st.auto);
   const gs=v.gauges.map(()=>({x:0,x_v:0}));
   let lm=null,lt='',lc='',lo='',lk='';c.first=true;
-  cur={tick(rdt){
-    const dt=rdt*(slow?0.3:1);c.dt=dt;
+  cur={unitText,toggleAuto(){setAuto(!st.auto);},toggleSlow(){speed.value=speed.value==='1'?'0.3':'1';},nextPoint(){kpN=Math.min(kps.length,kpN+1);showKp();},resetPoints(all){kpN=all||live?kps.length:0;showKp();},
+   tick(rdt){
+    const dt=rdt*(+speed.value);c.dt=dt;
     if(st.auto){st.t+=dt;v.auto(st.t,st);range.value=st.P;}
     if(st.mode!==lm){lm=st.mode;modeBtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===st.mode)));const off=v.sliderOff?v.sliderOff(st.mode):false;range.disabled=off;slw.classList.toggle('off',off);}
-    outv.textContent=Math.round(st.P);
+    outv.textContent=UP(st.P);
     const r=v.frame(c,st);c.first=false;
-    r.g.forEach((val,i)=>{const g=v.gauges[i];const x=phys(gs[i],'x',clamp(val/g.max),Math.min(dt,0.03),260,22);gEls[i].n.setAttribute('transform',`rotate(${(-90+180*x).toFixed(1)} 60 62)`);gEls[i].f.setAttribute('stroke-dashoffset',(100-100*x).toFixed(1));gEls[i].v.textContent=Math.round(val);});
+    r.g.forEach((val,i)=>{const g=v.gauges[i];const x=phys(gs[i],'x',clamp(val/g.max),Math.min(dt,0.03)||0.016,260,22);gEls[i].n.setAttribute('transform',`rotate(${(-90+180*x).toFixed(1)} 60 62)`);gEls[i].f.setAttribute('stroke-dashoffset',(100-100*x).toFixed(1));gEls[i].v.textContent=fmt(UPn(val),units==='si'&&UPn(val)<100?1:0);});
     sampleT+=rdt;if(sampleT>=0.05){sampleT=0;r.g.forEach((val,i)=>{const h=hist[i];h.push(val);if(h.length>200)h.shift();tl[i].setAttribute('points',h.map((y,j)=>`${(600-(h.length-1-j)*3).toFixed(0)},${(124-clamp(y/tmax)*116).toFixed(1)}`).join(' '));});}
     if(r.title!==lt){titleEl.textContent=r.title;lt=r.title;}
-    if(r.k!==lk){pill.dataset.k=r.k;lk=r.k;}
+    if(r.k!==lk){badge.dataset.k=r.k;lk=r.k;}
     if(r.cap!==lc){capEl.textContent=r.cap;lc=r.cap;}
-    if(stepEls.length){const kk=(r.on||[]).join();if(kk!==lo){lo=kk;stepEls.forEach(li=>li.classList.toggle('on',(r.on||[]).includes(+li.dataset.step)));}}
+    if(live){const kk=(r.on||[]).join();if(kk!==lo){lo=kk;kps.forEach(li=>li.classList.toggle('on',(r.on||[]).includes(+li.dataset.step)));}}
   }};
   cur.tick(0.016);
+  syncPresenter();
 }
+
+/* ---------- units ---------- */
+document.querySelectorAll('[data-units]').forEach(b=>b.addEventListener('click',()=>{units=b.dataset.units;
+  document.querySelectorAll('[data-units]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  if(curKey==='exam')renderExam();else{calcRefresh&&calcRefresh();cur&&cur.unitText();}}));
+
+/* ---------- lecture mode ---------- */
+let lecture=false;
+const lectBtn=$('lectureBtn'),pres=document.querySelector('.presenter');
+function setLecture(on){lecture=on;document.body.classList.toggle('lecture',on);lectBtn.setAttribute('aria-pressed',String(on));if(cur&&cur.resetPoints)cur.resetPoints(!on);syncPresenter();if(on)window.scrollTo({top:0});}
+lectBtn.addEventListener('click',()=>setLecture(!lecture));
+const order=V.map(v=>v.key).concat('exam');
+function step(d){const i=order.indexOf(curKey);go(order[(i+d+order.length)%order.length]);}
+function fullscreen(){try{if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}catch(e){}}
+pres.querySelector('[data-p-act=prev]').addEventListener('click',()=>step(-1));
+pres.querySelector('[data-p-act=next]').addEventListener('click',()=>step(1));
+pres.querySelector('[data-p-act=pt]').addEventListener('click',()=>cur&&cur.nextPoint&&cur.nextPoint());
+pres.querySelector('[data-p-act=fs]').addEventListener('click',fullscreen);
+pres.querySelector('[data-p-act=exit]').addEventListener('click',()=>setLecture(false));
+function syncPresenter(){const v=V.find(x=>x.key===curKey);pres.querySelector('.pname').textContent=v?v.name:'Course quiz';}
+document.addEventListener('keydown',e=>{
+  const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'))return;if(e.metaKey||e.ctrlKey||e.altKey)return;
+  const k=e.key;
+  if(k==='ArrowRight'&&lecture){step(1);e.preventDefault();}
+  else if(k==='ArrowLeft'&&lecture){step(-1);e.preventDefault();}
+  else if(k===' '&&cur&&t.tagName!=='BUTTON'){cur.toggleAuto();e.preventDefault();}
+  else if(k==='s'||k==='S'){cur&&cur.toggleSlow();}
+  else if(k==='n'||k==='N'){cur&&cur.nextPoint();}
+  else if(k==='l'||k==='L'){setLecture(!lecture);}
+  else if(k==='f'||k==='F'){fullscreen();}
+  else if(k==='Escape'&&lecture){setLecture(false);}
+});
 let last=0;
 function loop(ts){const dt=last?Math.min(0.05,(ts-last)/1000):0.016;last=ts;if(cur)cur.tick(dt);requestAnimationFrame(loop);}
 window.addEventListener('hashchange',()=>select(location.hash.slice(1)));

@@ -1,6 +1,8 @@
-# Hydraulic Pressure Control Valves
+# Pressure control valves: animated cross-sections
 
-Interactive, animated cutaways of seven hydraulic pressure control valves:
+An interactive teaching site in the same style as [hydraulic-cylinders](https://alibulentkoc.github.io/hydraulic-cylinders/). Students pick a valve from the list and watch it work in cross-section. Each valve has a short explanation, its schematic symbol, agricultural applications, a calculator (SI or US customary units) and a quiz.
+
+Valves included:
 
 - Check valve
 - Direct-acting relief valve
@@ -9,24 +11,24 @@ Interactive, animated cutaways of seven hydraulic pressure control valves:
 - Pressure-reducing valve
 - Unloading valve
 - Pilot-operated relief valve
+- Course quiz: concept questions from every valve plus calculation problems with new numbers each time
 
-Each valve has a pressure slider, an Auto mode, slow motion, live gauges, a 10-second pressure trace and its ISO schematic symbol. Fluid follows the standard hydraulic color code:
+## For each valve
 
-| Color  | Meaning                  |
-|--------|--------------------------|
-| Red    | Pump / system pressure   |
-| Orange | Pilot pressure           |
-| Yellow | Reduced or metered fluid |
-| Blue   | Return to tank           |
-| Green  | Drain                    |
+- **Cross-section animation** with a pressure slider, Play/Pause, slow motion, labels, live gauges and a 10-second pressure trace. Oil is coloured by function: pressure, pilot, reduced or metered, return and drain.
+- **How it works**, **Used for** and **Watch for**.
+- **In agriculture**: tractors, sprayers, planters, telehandlers, log splitters, combines and more, with typical settings and a class discussion question.
+- **Calculator** with Quantity, Formula, Substitution and Result columns, in consistent SI or US units.
+- **Quiz** with explanations; the best score is remembered in the browser.
 
-## Run it
+## Lecture mode
 
-It is a single self-contained file. Open `index.html` in any modern browser; no build step or server needed.
+Press **Lecture mode** (or `L`). Navigation is hidden, text is larger, and a presenter bar appears. Keys: `←` `→` change valve, `N` reveal the next point, `Space` play or pause, `S` slow motion, `F` full screen, `Esc` exit.
 
-## Publish with GitHub Pages
+## Publish on GitHub Pages
 
-Settings → Pages → Source: *Deploy from a branch* → Branch: `main`, folder `/ (root)`. The site will be served at
-`https://alibulentkoc.github.io/hydraulic-pressure-valves/`.
+Settings → Pages → Deploy from a branch → `main`, `/ (root)`. The site is served at `https://alibulentkoc.github.io/hydraulic-pressure-valves/`. Link straight to a valve with `#check`, `#relief`, `#sequence`, `#counterbalance`, `#reducing`, `#unloading`, `#pilot-relief` or `#exam`.
 
-Link straight to a valve with a hash, for example `#relief`, `#sequence`, `#counterbalance`, `#reducing`, `#unloading` or `#pilot-relief`.
+The site loads Google Fonts from a public CDN. Everything else is in `index.html`, with no build step.
+
+Drawings are simplified and not to scale. Typical settings are for teaching; always use the machine manufacturer's service manual for real adjustments.
